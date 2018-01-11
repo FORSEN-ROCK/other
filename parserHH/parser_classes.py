@@ -8,19 +8,21 @@ from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
 
 
-class ParserError(Exception):
+class BaseException(Exception):
     def __init__(self, message):
         self.message = message
 
 
-class EndParserError(Exception):
-    def __init__(self, message):
-        self.message = message
+class ParserError(BaseException):
+    pass
 
 
-class ExpressionError(Exception):
-    def __init__(self, message):
-        self.message = message
+class EndParserError(BaseException):
+    pass
+
+
+class ExpressionError(BaseException):
+    pass
 
 
 class Expression:
