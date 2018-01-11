@@ -276,115 +276,50 @@ class BaseParserResumeHTML(object):
     target_last_name = Expression()
     target_middle_name = Expression()
 
-    def get_container_error(self, html):
+    def _get_container(self, container_name, html):
+        """Base container getter.
+        Takes name of container element and html tree node
+        """
         html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_error is not None:
+        container_attr = getattr(self, 'container_' + container_name, None)
+        if container_attr:
             container_html = html_tree.find(
-                                self.container_error.tag,
-                                {self.container_error.attribute:
-                                self.container_error.value})
+                container_attr.tag,
+                {container_attr.attribute: container_attr.value}
+            )
         else:
             container_html = html_tree
         return container_html
+
+    def get_container_error(self, html):
+        return self._get_container('error', html)
 
     def get_container_head(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_head is not None:
-            container_html = html_tree.find(
-                                self.container_head.tag,
-                                {self.container_head.attribute:
-                                self.container_head.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('head', html)
 
     def get_container_gender(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_gender is not None:
-            container_html = html_tree.find(
-                                self.container_gender.tag,
-                                {self.container_gender.attribute:
-                                self.container_gender.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('gender', html)
 
     def get_container_phone(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_phone is not None:
-            container_html = html_tree.find(
-                                self.container_phone.tag,
-                                {self.container_phone.attribute:
-                                self.container_phone.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('phone', html)
 
     def get_container_email(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_email is not None:
-            container_html = html_tree.find(
-                                self.container_email.tag,
-                                {self.container_email.attribute:
-                                self.container_email.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('email', html)
 
     def get_container_city(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_city is not None:
-            container_html = html_tree.find(
-                                self.container_city.tag,
-                                {self.container_city.attribute:
-                                self.container_city.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('city', html)
 
     def get_container_metro_station(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_metro_station is not None:
-            container_html = html_tree.find(
-                                self.container_metro_station.tag,
-                                {self.container_metro_station.attribute:
-                                self.container_metro_station.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('metro_station', html)
 
     def get_container_education(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_education is not None:
-            container_html = html_tree.find(
-                                self.container_education.tag,
-                                {self.container_education.attribute:
-                                self.container_education.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('education', html)
 
     def get_container_experience(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_experience is not None:
-            container_html = html_tree.find(
-                                self.container_experience.tag,
-                                {self.container_experience.attribute:
-                                self.container_experience.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('experience', html)
 
     def get_container_full_name(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_full_name is not None:
-            container_html = html_tree.find(
-                                self.container_full_name.tag,
-                                {self.container_full_name.attribute:
-                                self.container_full_name.value})
-        else:
-            container_html = html_tree
-        return container_html
+        return self._get_container('full_name', html)
 
     def get_error(self, html):
         error = html.find(
