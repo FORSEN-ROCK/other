@@ -321,13 +321,32 @@ class BaseParserResumeHTML(object):
     def get_container_full_name(self, html):
         return self._get_container('full_name', html)
 
+    def _get_target(self, target_name, html, return_html_node=False):
+        """Base target getter.
+        Takes name of target element and html tree node
+        """
+        target_attr = getattr(self, 'target_' + target_name, None)
+
+        if not target_attr:
+            raise ExpressionError("No goal %s specified" % target_name)
+
+        element = html.find(
+            target_attr.tag,
+            {target_attr.attribute: target_attr.value}
+        )
+
+        if element:
+            if not return_html_node:
+                result = element.get_text()
+            else:
+                result = element
+        else:
+            result = None
+
+        return result
+
     def get_error(self, html):
-        error = html.find(
-                   self.target_error.tag,
-                   {self.target_error.attribute:
-                   self.target_error.value})
-        #error = element_html.get_text()
-        return error
+        return self._get_target('error', html, return_html_node=True)
 
     #def get_head(self, html):
     #    html_tree = BeautifulSoup(html, 'html.parser')
@@ -339,95 +358,49 @@ class BaseParserResumeHTML(object):
     #    return head
 
     def get_gender(self, html):
-        element_html = html.find(
-                   self.target_gender.tag,
-                   {self.target_gender.attribute:
-                   self.target_gender.value})
-        gender = element_html.get_text()
-        return gender
+        return self._get_target('gender', html)
 
     def get_phone(self, html):
-        element_html = html.find(
-                   self.target_phone.tag,
-                   {self.target_phone.attribute:
-                   self.target_phone.value})
-        phone = element_html.get_text()
+        phone = self._get_target('phone', html)
+
         list_number = re.findall(r'\d{0,11}', phone)
         phone_number = str().join(list_number)
         number = '8' + phone_number[1:11]
         return number
 
     def get_email(self, html):
-        element_html = html.find(
-                   self.target_email.tag,
-                   {self.target_email.attribute:
-                   self.target_email.value})
-        email = element_html.get_text()
-        return email
+        return self._get_target('email', html)
 
     def get_city(self, html):
-        element_html = html.find(
-                   self.target_city.tag,
-                   {self.target_city.attribute:
-                   self.target_city.value})
-        city = element_html.get_text()
-        return city
+        return self._get_target('city', html)
 
     def get_metro_station(self, html):
-        if self.target_metro_station is None:
-            raise ExpressionError("No goal specified")
-        element_html = html.find(
-                   self.target_metro_station.tag,
-                   {self.target_metro_station.attribute:
-                   self.target_metro_station.value})
-        metro_station = element_html.get_text()
-        return metro_station
+        return self._get_target('metro_station', html)
 
     def get_education(self, html):
-        element_html = html.find(
-                   self.target_education.tag,
-                   {self.target_education.attribute:
-                   self.target_education.value})
-        education = element_html.get_text()
-        return education
+        return self._get_target('education', html)
 
     def get_experience(self, html):
-        element_html = html.find(
-                   self.target_experience.tag,
-                   {self.target_experience.attribute:
-                   self.target_experience.value})
-        experience = element_html.get_text()
-        return experience
+        return self._get_target('experience', html)
 
+    def _get_name_part(self, html, target_name, name_index):
+        full_name = self._get_target(target_name, html)
+        try:
+            name = full_name.split(' ')[name_index]
+        except IndexError:
+            name = None
+
+        return name
+
+    # TODO: fix typo (firts -> first)
     def get_firts_name(self, html):
-        element_html = html.find(
-                   self.target_first_name.tag,
-                   {self.target_first_name.attribute:
-                   self.target_first_name.value})
-        full_name = element_html.get_text()
-        list_name = full_name.split(' ')
-        first_name = list_name[1]
-        return first_name
+        return self._get_name_part(html, 'first_name', 1)
 
     def get_last_name(self, html):
-        element_html = html.find(
-                   self.target_last_name.tag,
-                   {self.target_last_name.attribute:
-                   self.target_last_name.value})
-        full_name = element_html.get_text()
-        list_name = full_name.split(' ')
-        last_name = list_name[0]
-        return last_name
+        return self._get_name_part(html, 'last_name', 0)
 
     def get_middle_name(self, html):
-        element_html = html.find(
-                   self.target_middle_name.tag,
-                   {self.target_middle_name.attribute:
-                   self.target_middle_name.value})
-        full_name = element_html.get_text()
-        list_name = full_name.split(' ')
-        middle_name = list_name[2]
-        return middle_name
+        return self._get_name_part(html, 'middle_name', 2)
 
 
 class BaseParserSearchAPI(object):
@@ -829,15 +802,8 @@ class HhParserResume(BaseParserResumeHTML):
                 attribute='class',
                 value='resume-block__title-text resume-block__title-text_sub'
                 )
-    target_first_name = Expression(tag='h1',
-                                   attribute='itemprop',
-                                   value='name')
-    target_last_name = Expression(tag='h1',
-                                  attribute='itemprop',
-                                  value='name')
-    target_middle_name = Expression(tag='h1',
-                                    attribute='itemprop',
-                                    value='name')
+    target_first_name = target_middle_name = target_last_name = Expression(
+        tag='h1', attribute='itemprop', value='name')
 
 
 class ZarplataParserSearch(BaseParserSearchAPI):
