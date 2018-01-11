@@ -1,10 +1,12 @@
-from urllib.error import HTTPError, URLError
-import urllib.request as urllib
 import re
 import time
-import datetime
 import json
+import datetime
+import urllib.request as urllib
+
+from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
+
 
 class ParserError(Exception):
     def __init__(self, message):
