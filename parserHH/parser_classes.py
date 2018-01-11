@@ -625,73 +625,47 @@ def parser_resume(cls=None, html=None):
     resume_data = {}
     #head_html = cls.get_container_head(html)
     #head = cls.get_head(html)
+
     gender_html = cls.get_container_gender(html)
-    try:
-        gender = cls.get_gender(gender_html)
-    except AttributeError:
-        gender = None
+    gender = cls.get_gender(gender_html)
     resume_data.setdefault('gender', gender)
+
     city_html = cls.get_container_city(html)
-    try:
-        city = cls.get_city(city_html)
-    except AttributeError:
-        city = None
+    city = cls.get_city(city_html)
     resume_data.setdefault('city', city)
+
     metro_station_html = cls.get_container_metro_station(html)
-    try:
-        metro_station = cls.get_metro_station(metro_station_html)
-    except AttributeError:
-        metro_station = None
-    except ExpressionError:
-        metro_station = None
+    metro_station = cls.get_metro_station(metro_station_html)
     resume_data.setdefault('metro_station', metro_station)
+
     phone_html = cls.get_container_phone(html)
     try:
         phone = cls.get_phone(phone_html)
     except IndexError:
         phone = None
-    except AttributeError:
-        phone = None
     resume_data.setdefault('phone', phone)
+
     email_html = cls.get_container_email(html)
-    try:
-        email = cls.get_email(email_html)
-    except AttributeError:
-        email = None
+    email = cls.get_email(email_html)
     resume_data.setdefault('email', email)
+
     education_html = cls.get_container_education(html)
-    try:
-        education = cls.get_education(education_html)
-    except AttributeError:
-        education = None
+    education = cls.get_education(education_html)
     resume_data.setdefault('education', education)
+
     experience_html = cls.get_container_experience(html)
-    try:
-        experience = cls.get_experience(experience_html)
-    except AttributeError:
-        experience = None
+    experience = cls.get_experience(experience_html)
     resume_data.setdefault('experience', experience)
+
     full_name_html = cls.get_container_full_name(html)
-    try:
-        first_name = cls.get_firts_name(full_name_html)
-    except IndexError:
-        first_name = None
-    except AttributeError:
-        first_name = None
+
+    first_name = cls.get_firts_name(full_name_html)
     resume_data.setdefault('first_name', first_name)
-    try:
-        last_name = cls.get_last_name(full_name_html)
-    except IndexError:
-        last_name = None
-    except AttributeError:
-        last_name = None
+
+    last_name = cls.get_last_name(full_name_html)
     resume_data.setdefault('last_name', last_name)
-    try:
-        middle_name = cls.get_middle_name(full_name_html)
-    except IndexError:
-        middle_name = None
-    except AttributeError:
-        middle_name = None
+
+    middle_name = cls.get_middle_name(full_name_html)
     resume_data.setdefault('middle_name', middle_name)
     return resume_data
 
