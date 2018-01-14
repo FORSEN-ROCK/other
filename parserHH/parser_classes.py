@@ -329,11 +329,14 @@ class BaseParserResumeHTML(object):
 
         if not target_attr:
             raise ExpressionError("No goal %s specified" % target_name)
-
-        element = html.find(
-            target_attr.tag,
-            {target_attr.attribute: target_attr.value}
-        )
+        
+        if html: 
+            element = html.find(
+                target_attr.tag,
+                {target_attr.attribute: target_attr.value}
+            )
+        else:
+            element = None
 
         if element:
             if not return_html_node:
@@ -362,10 +365,12 @@ class BaseParserResumeHTML(object):
 
     def get_phone(self, html):
         phone = self._get_target('phone', html)
-
-        list_number = re.findall(r'\d{0,11}', phone)
-        phone_number = str().join(list_number)
-        number = '8' + phone_number[1:11]
+        if phone:    
+            list_number = re.findall(r'\d{0,11}', phone)
+            phone_number = str().join(list_number)
+            number = '8' + phone_number[1:11]
+        else:
+            number = None
         return number
 
     def get_email(self, html):
@@ -385,14 +390,17 @@ class BaseParserResumeHTML(object):
 
     def _get_name_part(self, html, target_name, name_index):
         full_name = self._get_target(target_name, html)
-        try:
-            name = full_name.split(' ')[name_index]
-        except IndexError:
+        
+        if full_name:
+            try:
+                name = full_name.split(' ')[name_index]
+            except IndexError:
+                name = None
+        else:
             name = None
 
         return name
 
-    # TODO: fix typo (firts -> first)
     def get_firts_name(self, html):
         return self._get_name_part(html, 'first_name', 1)
 
@@ -846,8 +854,8 @@ if __name__ == '__main__':
         end_time = time.time()
         spent = end_time - begin_time
         print('namber_page = %i, spent = %f' %(namber_page, spent))
-        #if namber_page >= 50:
-        #    break
+        if namber_page >= 50:
+            break
         namber_page += 1
     end_all_time = time.time()
     spent_all = (end_all_time - begin_all_time) / 60
