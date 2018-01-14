@@ -60,7 +60,7 @@ class BaseParserSearchHTML(object):
     target_url = Expression()
     target_last_update = Expression()
     target_body = Expression()
-    
+
     def _get_container(self, container_name, html):
         """Base container getter.
         Takes name of container element and html tree node
@@ -75,7 +75,27 @@ class BaseParserSearchHTML(object):
         else:
             container_html = html
         return container_html
-    
+
+    def _get_more_target(self, target_name, html):
+        """Base targets getter.
+        Takes name of target element
+        Returned HTML nodes
+        """
+        target_attr = getattr(self, 'target_' + target_name, None)
+        
+        if not target_attr:
+            raise ExpressionError("No goal %s specified" % target_name)
+        
+        if html: 
+            elements = html.findAll(
+                target_attr.tag,
+                {target_attr.attribute: target_attr.value}
+            )
+        else:
+            elements = None
+            
+        return elements    
+
     def get_container_error(self, html):
         html_tree = BeautifulSoup(html, 'html.parser')
         return self._get_container('error', html_tree)
@@ -107,7 +127,7 @@ class BaseParserSearchHTML(object):
     def get_container_body(self, html):
         html_tree = BeautifulSoup(html, 'html.parser')
         return self._get_container('body', html_tree)
-    
+
     def _get_target(self, target_name, html, return_html_node=False):
         """Base target getter.
         Takes name of target element and html tree node
@@ -137,14 +157,14 @@ class BaseParserSearchHTML(object):
 
     def get_error(self, html):
         return self._get_target('error', html, return_html_node=True)
-    
+
     def get_body(self, html):
         element_html = html.findAll(
                         self.target_body.tag,
                         {self.target_body.attribute:
                         self.target_body.value})
         return element_html
-    
+
     def get_title_resume(self, html):
         return self._get_target('title_resume', html)
 
@@ -767,10 +787,138 @@ class ZarplataParserSearch(BaseParserSearchAPI):
         return url
 
 
-#class SuperjobParserSearch(BaseParserSearchHTML):
+class SuperjobParserSearch(BaseParserSearchHTML):
+    container_salary = Expression(tag='div',
+                                  attribute='class',
+                                  value='ResumeListElementNew_text')
+    container_age = Expression(tag='div',
+                                  attribute='class',
+                                  value='ResumeListElementNew_text')
+    container_experience = Expression(tag='div',
+                                  attribute='class',
+                                  value='ResumeListElementNew_text')
+    container_last_update = Expression(
+                tag='div',
+                attribute='class',
+                value='sj_block m_b_2 ResumeListElementNew_history'
+    )  
+
+    target_error = Expression(tag='div',
+                              attribute='class',
+                              value='error')
+    target_title_resume = Expression(tag='a',
+                                     attribute='target',
+                                     value='_blank')
+    target_salary = Expression(tag='span',
+                               attribute='class',
+                               value='sj_text ResumeListElementNew_bold')
+    target_age = Expression(tag='span',
+                            attribute='class',
+                            value='sj_text')
+    target_experience = Expression(tag='span',
+                                   attribute='class',
+                                   value='h_color_gray')
+    target_last_position = Expression(tag='a',
+                                      attribute='class',
+                                      value='h_color_black h_border_dotted')
+    target_organization_name = Expression(tag='div',
+                                          attribute='class',
+                                          value='h_color_gray')
+    target_url = Expression(tag='a',
+                            attribute='target',
+                            value='_blank')
+    target_last_update = Expression(tag='span',
+                                    attribute='class',
+                                    value='sj_text m_small')
+    target_body = Expression(tag='div',
+                             attribute='class',
+                             value='ResumeListElementNew js-resume-item')
+'''
+    def get_salary(self, html):
+        if html:
+            list_elements = html.findAll(
+                    self.target_salary.tag,
+                    {self.target_salary.attribute, sself.target_salary}
+            )
+            if list_elements:
+                try:
+                    element_salary = list_elements[0]
+                    salary_inner = element_salary.get_text()
+                    salary_list = re.findall(r'\d+', salary_inner)
+                    salary_str = str().join(salary_list)
+                    salary = salary_str
+                except IndexError:
+                    salary = None
+            else:
+                salary = None
+
+        return salary
+'''
+    def get_age(self, html):
+        if html:
+            list_elements = html.findAll(
+                        self.target_age.tag,
+                        {self.target_age.attribute, self.target_age.value}
+            )
+            if list_elements:
+                try:
+                    element_age = list_elements[1]
+                    age_inner = element_age.get_text()
+                    age_list = re.findall(r'\d{2}', list_numder)
+                    age_str = str().join(age_list)
+                    age = age_str
+                except IndexError:
+                    age = None
+            else:
+                age = None
+                
+            return age
+
+    def get_experience(self, html):
+        if html:
+            list_elements = html.findAll(
+                        self.target_age.tag,
+                        {self.target_age.attribute, self.target_age.value}
+            )
+            if list_elements:
+                try:
+                    element_experience = list_elements[-1]
+                    experience = element_age.get_text()
+                except IndexError:
+                    experience = None
+            else:
+                experience = None
+        return experience
+
+    def get_last_position(self, html):
+        raw_data = self._get_target('last_position', html)
+        if raw_data:
+            list_char = re.findAll(
+                "[^<span class='sj_match_highlight'>][^</span>]",
+                raw_data
+            )
+            last_position = str().join(list_char)
+        else:
+            last_position = None
+         
+        return last_position
 
 
 #class SuperjobParserResume(BaseParserResumeHTML):
+
+
+#class AvitoParserSearch(BaseParserSearchHTML):
+
+
+#class AvitoParserResume(BaseParserResumeHTML):
+
+
+#class RabotaParserSearch(BaseParserSearchHTML):
+
+
+#class RabotaParserResume(BaseParserResumeHTML):
+
+
 if __name__ == '__main__':
     '''
     url = 'https://hh.ru/resume/e9bb81ccff0337fea50039ed1f577a68444648'
