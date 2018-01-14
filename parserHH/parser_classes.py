@@ -60,267 +60,54 @@ class BaseParserSearchHTML(object):
     target_url = Expression()
     target_last_update = Expression()
     target_body = Expression()
-
-    def get_container_error(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_error is not None:
-            container_html = html_tree.find(
-                                self.container_error.tag,
-                                {self.container_error.attribute:
-                                self.container_error.value})
-        else:
-            container_html = html_tree
-        return container_html
-
-    def get_container_title_resume(self, html):
-        if self.container_title_resume is not None:
-            container_html = html.find(
-                                self.container_title_resume.tag,
-                                {self.container_title_resume.attribute:
-                                self.container_title_resume.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_salary(self, html):
-        if self.container_salary is not None:
-            container_html = html.find(
-                                self.container_salary.tag,
-                                {self.container_salary.attribute:
-                                self.container_salary.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_age(self, html):
-        if self.container_age is not None:
-            container_html = html.find(
-                                self.container_age.tag,
-                                {self.container_age.attribute:
-                                self.container_age.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_experience(self, html):
-        if self.container_experience is not None:
-            container_html = html.find(
-                                self.container_experience.tag,
-                                {self.container_experience.attribute:
-                                self.container_experience.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_last_position(self, html):
-        if self.container_last_position is not None:
-            container_html = html.find(
-                                self.container_last_position.tag,
-                                {self.container_last_position.attribute:
-                                self.container_last_position.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_organization_name(self, html):
-        if self.container_organization_name is not None:
-            container_html = html.find(
-                                self.container_organization_name.tag,
-                                {self.container_organization_name.attribute:
-                                self.container_organization_name.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_url(self, html):
-        if self.container_url is not None:
-            container_html = html.find(
-                                self.container_url.tag,
-                                {self.container_url.attribute:
-                                self.container_url.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_last_update(self, html):
-        if self.container_last_update is not None:
-            container_html = html.find(
-                                self.container_last_update.tag,
-                                {self.container_last_update.attribute:
-                                self.container_last_update.value})
-        else:
-            container_html = html
-        return container_html
-
-    def get_container_body(self, html):
-        html_tree = BeautifulSoup(html, 'html.parser')
-        if self.container_body is not None:
-            container_html = html_tree.find(
-                                self.container_body.tag,
-                                {self.container_body.attribute:
-                                self.container_body.value})
-        else:
-            container_html = html_tree
-        return container_html
-
-    def get_error(self, html):
-        error = html.find(
-                   self.target_error.tag,
-                   {self.target_error.attribute:
-                   self.target_error.value})
-        #error = element_html.get_text()
-        return error
-
-    def get_title_resume(self, html):
-        element_html = html.find(
-                        self.target_title_resume.tag,
-                        {self.target_title_resume.attribute:
-                        self.target_title_resume.value})
-        title_resume = element_html.get_text()
-        return title_resume
-
-    def get_salary(self, html):
-        element_html = html.find(
-                        self.target_salary.tag,
-                        {self.target_salary.attribute:
-                        self.target_salary.value})
-        list_numder = element_html.get_text()
-        salary_list = re.findall(r'\d+', list_numder)
-        salary_str = str().join(salary_list)
-        salary = salary_str
-        return salary
-
-    def get_age(self, html):
-        element_html = html.find(
-                        self.target_age.tag,
-                        {self.target_age.attribute:
-                        self.target_age.value})
-        list_numder = element_html.get_text()
-        age_list = re.findall(r'\d{2}', list_numder)
-        age_str = str().join(age_list)
-        age = age_str
-        return age
-
-    def get_experience(self, html):
-        element_html = html.find(
-                        self.target_experience.tag,
-                        {self.target_experience.attribute:
-                        self.target_experience.value})
-        experience = element_html.get_text()
-        return experience
-
-    def get_last_position(self, html):
-        element_html = html.find(
-                        self.target_last_position.tag,
-                        {self.target_last_position.attribute:
-                        self.target_last_position.value})
-        last_position = element_html.get_text()
-        return last_position
-
-    def get_organization_name(self, html):
-        element_html = html.find(
-                        self.target_organization_name.tag,
-                        {self.target_organization_name.attribute:
-                        self.target_organization_name.value})
-        organization_name = element_html.get_text()
-        return organization_name
-
-    def get_url(self, html):
-        element_html = html.find(
-                        self.target_url.tag,
-                        {self.target_url.attribute:
-                        self.target_url.value})
-        url = element_html['href']
-        return url
-
-    def get_last_update(self, html):
-        element_html = html.find(
-                        self.target_last_update.tag,
-                        {self.target_last_update.attribute:
-                        self.target_last_update.value})
-        last_update = element_html.get_text()
-        return last_update
-
-    def get_body(self, html):
-        element_html = html.findAll(
-                        self.target_body.tag,
-                        {self.target_body.attribute:
-                        self.target_body.value})
-        #body = element_html.get_text()
-        return element_html
-
-
-# Parser for resume
-class BaseParserResumeHTML(object):
-    container_error = None
-    container_head = None
-    container_gender = None
-    container_phone = None
-    container_email = None
-    container_city = None
-    container_metro_station = None
-    container_education = None
-    container_experience = None
-    container_full_name = None
-
-    target_error = Expression()
-    #target_head = Expression()
-    target_gender = Expression()
-    target_phone = Expression()
-    target_email = Expression()
-    target_city = Expression()
-    target_metro_station = Expression()
-    target_education = Expression()
-    target_experience = Expression()
-    target_first_name = Expression()
-    target_last_name = Expression()
-    target_middle_name = Expression()
-
+    
     def _get_container(self, container_name, html):
         """Base container getter.
         Takes name of container element and html tree node
         """
-        html_tree = BeautifulSoup(html, 'html.parser')
+        #html_tree = BeautifulSoup(html, 'html.parser')
         container_attr = getattr(self, 'container_' + container_name, None)
         if container_attr:
-            container_html = html_tree.find(
+            container_html = html.find(
                 container_attr.tag,
                 {container_attr.attribute: container_attr.value}
             )
         else:
-            container_html = html_tree
+            container_html = html
         return container_html
-
+    
     def get_container_error(self, html):
-        return self._get_container('error', html)
+        html_tree = BeautifulSoup(html, 'html.parser')
+        return self._get_container('error', html_tree)
 
-    def get_container_head(self, html):
-        return self._get_container('head', html)
+    def get_container_title_resume(self, html):
+        return self._get_container('title_resume', html)
 
-    def get_container_gender(self, html):
-        return self._get_container('gender', html)
+    def get_container_salary(self, html):
+        return self._get_container('salary', html)
 
-    def get_container_phone(self, html):
-        return self._get_container('phone', html)
-
-    def get_container_email(self, html):
-        return self._get_container('email', html)
-
-    def get_container_city(self, html):
-        return self._get_container('city', html)
-
-    def get_container_metro_station(self, html):
-        return self._get_container('metro_station', html)
-
-    def get_container_education(self, html):
-        return self._get_container('education', html)
+    def get_container_age(self, html):
+        return self._get_container('age', html)
 
     def get_container_experience(self, html):
         return self._get_container('experience', html)
 
-    def get_container_full_name(self, html):
-        return self._get_container('full_name', html)
+    def get_container_last_position(self, html):
+        return self._get_container('last_position', html)
 
+    def get_container_organization_name(self, html):
+        return self._get_container('organization_name', html)
+
+    def get_container_url(self, html):
+        return self._get_container('url', html)
+
+    def get_container_last_update(self, html):
+        return self._get_container('last_update', html)
+
+    def get_container_body(self, html):
+        html_tree = BeautifulSoup(html, 'html.parser')
+        return self._get_container('body', html_tree)
+    
     def _get_target(self, target_name, html, return_html_node=False):
         """Base target getter.
         Takes name of target element and html tree node
@@ -350,15 +137,183 @@ class BaseParserResumeHTML(object):
 
     def get_error(self, html):
         return self._get_target('error', html, return_html_node=True)
+    
+    def get_body(self, html):
+        element_html = html.findAll(
+                        self.target_body.tag,
+                        {self.target_body.attribute:
+                        self.target_body.value})
+        return element_html
+    
+    def get_title_resume(self, html):
+        return self._get_target('title_resume', html)
 
-    #def get_head(self, html):
-    #    html_tree = BeautifulSoup(html, 'html.parser')
-    #    element_html = html_tree.find(
-    #               self.target_head.tag,
-    #               {self.target_head.attribute:
-    #               self.target_head.value})
-    #    head = element_html.get_text()
-    #    return head
+    def get_salary(self, html):
+        list_numder = self._get_target('salary', html)
+        if list_numder:
+            salary_list = re.findall(r'\d+', list_numder)
+            salary_str = str().join(salary_list)
+            salary = salary_str
+        else:
+            salary = None
+        return salary
+
+    def get_age(self, html):
+        list_numder = self._get_target('age', html)
+        if list_numder:
+            age_list = re.findall(r'\d{2}', list_numder)
+            age_str = str().join(age_list)
+            age = age_str
+        else:
+            age = None
+        return age
+
+    def get_experience(self, html):
+        return self._get_target('experience', html)
+
+    def get_last_position(self, html):
+        return self._get_target('last_position', html)
+
+    def get_organization_name(self, html):
+        return self._get_target('organization_name', html)
+
+    def get_url(self, html):
+        element_html = self._get_target('url', html, return_html_node=True)
+        if element_html:
+            url = element_html['href']
+        else:
+            url = None
+        return url
+
+    def get_last_update(self, html):
+        return self._get_target('last_update', html)
+
+
+# Parser for resume
+class BaseParserResumeHTML(object):
+    container_error = None
+    container_head = None
+    container_gender = None
+    container_phone = None
+    container_email = None
+    container_city = None
+    container_metro_station = None
+    container_education = None
+    container_experience = None
+    container_full_name = None
+    container_key_words = None
+
+    target_error = Expression()
+    #target_head = Expression()
+    target_gender = Expression()
+    target_phone = Expression()
+    target_email = Expression()
+    target_city = Expression()
+    target_metro_station = Expression()
+    target_education = Expression()
+    target_experience = Expression()
+    target_first_name = Expression()
+    target_last_name = Expression()
+    target_middle_name = Expression()
+    target_key_words = Expression()
+
+    def _get_container(self, container_name, html):
+        """Base container getter.
+        Takes name of container element and html tree node
+        """
+        html_tree = BeautifulSoup(html, 'html.parser')
+        container_attr = getattr(self, 'container_' + container_name, None)
+        if container_attr:
+            container_html = html_tree.find(
+                container_attr.tag,
+                {container_attr.attribute: container_attr.value}
+            )
+        else:
+            container_html = html_tree
+        return container_html
+        
+    def _get_target(self, target_name, html, return_html_node=False):
+        """Base target getter.
+        Takes name of target element and html tree node
+        """
+        target_attr = getattr(self, 'target_' + target_name, None)
+
+        if not target_attr:
+            raise ExpressionError("No goal %s specified" % target_name)
+        
+        if html: 
+            element = html.find(
+                target_attr.tag,
+                {target_attr.attribute: target_attr.value}
+            )
+        else:
+            element = None
+
+        if element:
+            if not return_html_node:
+                result = element.get_text()
+            else:
+                result = element
+        else:
+            result = None
+
+        return result
+        
+    def _get_more_target(self, target_name, html):
+        """Base targets getter.
+        Takes name of target element
+        Returned HTML nodes
+        """
+        target_attr = getattr(self, 'target_' + target_name, None)
+        
+        if not target_attr:
+            raise ExpressionError("No goal %s specified" % target_name)
+        
+        if html: 
+            elements = html.findAll(
+                target_attr.tag,
+                {target_attr.attribute: target_attr.value}
+            )
+        else:
+            elements = None
+            
+        return elements
+        
+    def get_container_error(self, html):
+        return self._get_container('error', html)
+
+    def get_container_head(self, html):
+        return self._get_container('head', html)
+
+    def get_container_gender(self, html):
+        return self._get_container('gender', html)
+
+    def get_container_phone(self, html):
+        return self._get_container('phone', html)
+
+    def get_container_email(self, html):
+        return self._get_container('email', html)
+
+    def get_container_city(self, html):
+        return self._get_container('city', html)
+
+    def get_container_metro_station(self, html):
+        return self._get_container('metro_station', html)
+
+    def get_container_education(self, html):
+        return self._get_container('education', html)
+
+    def get_container_experience(self, html):
+        return self._get_container('experience', html)
+
+    def get_container_full_name(self, html):
+        return self._get_container('full_name', html)
+        
+    def get_container_key_words(self, html):
+        return self._get_container('key_words', html)
+
+    def get_error(self, html):
+        return self._get_target('error', html, return_html_node=True)
 
     def get_gender(self, html):
         return self._get_target('gender', html)
@@ -409,6 +364,17 @@ class BaseParserResumeHTML(object):
 
     def get_middle_name(self, html):
         return self._get_name_part(html, 'middle_name', 2)
+
+    def get_key_words(self, html):    
+        elements = self._get_more_target('key_words', html)
+        key_words_list = []
+        
+        if elements:
+            for item_element in elements:
+                key_word = item_element.get_text()
+                key_words_list.append(key_word)
+        
+        return key_words_list
 
 
 class BaseParserSearchAPI(object):
@@ -567,58 +533,32 @@ def parser_search(cls=None, html=None):
     for body_item in bodys:
         resume = {}
         title_resume_html = cls.get_container_title_resume(body_item)
-        try:
-            title_resume = cls.get_title_resume(title_resume_html)
-        except AttributeError:
-            title_resume = None
+        title_resume = cls.get_title_resume(title_resume_html)
         resume.setdefault('title_resume', title_resume)
         salary_html = cls.get_container_salary(body_item)
-        try:
-            salary = cls.get_salary(salary_html)
-        except AttributeError:
-            salary = None
+        salary = cls.get_salary(salary_html)
         resume.setdefault('salary', salary)
         age_html = cls.get_container_age(body_item)
-        try:
-            age = cls.get_age(age_html)
-        except AttributeError:
-            age = None
+        age = cls.get_age(age_html)
         resume.setdefault('age', age)
         experience_html = cls.get_container_experience(body_item)
-        try:
-            experience = cls.get_experience(experience_html)
-        except AttributeError:
-            experience = None
+        experience = cls.get_experience(experience_html)
         resume.setdefault('experience', experience)
         last_position_html = cls.get_container_last_position(body_item)
-        try:
-            last_position = cls.get_last_position(last_position_html)
-        except AttributeError:
-            last_position = None
-        except IndexError:
-            last_position = None
+        last_position = cls.get_last_position(last_position_html)
         resume.setdefault('last_position', last_position)
         organization_name_html = cls.get_container_organization_name(
-                                    body_item)
-        try:
-            organization_name = cls.get_organization_name(
-                                  organization_name_html)
-        except AttributeError:
-            organization_name = None
-        except IndexError:
-            organization_name = None
+                                    body_item
+        )
+        organization_name = cls.get_organization_name(
+                                  organization_name_html
+        )
         resume.setdefault('organization_name', organization_name)
         url_html = cls.get_container_url(body_item)
-        try:
-            url = cls.get_url(url_html)
-        except AttributeError:
-            url = None
+        url = cls.get_url(url_html)
         resume.setdefault('url', url)
         last_update_html = cls.get_container_last_update(body_item)
-        try:
-            last_update = cls.get_last_update(last_update_html)
-        except AttributeError:
-            last_update = None
+        last_update = cls.get_last_update(last_update_html)
         resume.setdefault('last_update', last_update)
         resumes.append(resume)
     return resumes
@@ -675,6 +615,9 @@ def parser_resume(cls=None, html=None):
 
     middle_name = cls.get_middle_name(full_name_html)
     resume_data.setdefault('middle_name', middle_name)
+    key_words_html = cls.get_container_key_words(html)
+    key_words = cls.get_key_words(key_words_html)
+    resume_data.setdefault('key_words', key_words)
     return resume_data
 
 
@@ -718,16 +661,21 @@ class HhParserSearch(BaseParserSearchHTML):
                                     attribute='class',
                                     value='output__tab m-output__date')
     target_body = Expression(tag='tr',
-                            attribute='itemscope',
-                            value='itemscope')
-
-    def get_url(self, html):
-        element_html = html.find(
-                        self.target_url.tag,
-                        {self.target_url.attribute:
-                        self.target_url.value})
-        local_url = element_html['href']
-        url = 'https://hh.ru' + local_url
+                             attribute='itemscope',
+                             value='itemscope')
+    target_key_words = Expression(
+      tag='span',
+      attribute='class',
+      value='bloko-tag bloko-tag_inline bloko-tag_countable Bloko-TagList-Tag'
+    )
+    
+    def get_url(self, html):    
+        element_html = self._get_target('url', html, return_html_node=True)
+        if element_html:
+            local_url = element_html['href']
+            url = 'https://hh.ru' + local_url
+        else:
+            url = None
         return url
 
 
@@ -819,6 +767,10 @@ class ZarplataParserSearch(BaseParserSearchAPI):
         return url
 
 
+#class SuperjobParserSearch(BaseParserSearchHTML):
+
+
+#class SuperjobParserResume(BaseParserResumeHTML):
 if __name__ == '__main__':
     '''
     url = 'https://hh.ru/resume/e9bb81ccff0337fea50039ed1f577a68444648'
@@ -896,7 +848,7 @@ if __name__ == '__main__':
         end_resume = time.time()
         spant_resume = (end_resume - begin_resume) / 60
         print('Resume - %i, spent = %f' %(resume_index,
-                                              spant_resume))
+                                          spant_resume))
         resume_index += 1
     end_resumes = time.time()
     file_error.close()
