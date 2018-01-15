@@ -5,6 +5,7 @@ import datetime
 import urllib.request as urllib
 
 from urllib.error import HTTPError, URLError
+from random import random
 from bs4 import BeautifulSoup
 
 
@@ -833,7 +834,7 @@ class SuperjobParserSearch(BaseParserSearchHTML):
     target_body = Expression(tag='div',
                              attribute='class',
                              value='ResumeListElementNew js-resume-item')
-'''
+    '''
     def get_salary(self, html):
         if html:
             list_elements = html.findAll(
@@ -853,7 +854,8 @@ class SuperjobParserSearch(BaseParserSearchHTML):
                 salary = None
 
         return salary
-'''
+    '''
+
     def get_age(self, html):
         if html:
             list_elements = html.findAll(
@@ -864,7 +866,7 @@ class SuperjobParserSearch(BaseParserSearchHTML):
                 try:
                     element_age = list_elements[1]
                     age_inner = element_age.get_text()
-                    age_list = re.findall(r'\d{2}', list_numder)
+                    age_list = re.findall(r'\d{2}', age_inner)
                     age_str = str().join(age_list)
                     age = age_str
                 except IndexError:
@@ -877,13 +879,13 @@ class SuperjobParserSearch(BaseParserSearchHTML):
     def get_experience(self, html):
         if html:
             list_elements = html.findAll(
-                        self.target_age.tag,
-                        {self.target_age.attribute, self.target_age.value}
+              self.target_experience.tag,
+              {self.target_experience.attribute, self.target_experience.value}
             )
             if list_elements:
                 try:
                     element_experience = list_elements[-1]
-                    experience = element_age.get_text()
+                    experience = element_experience.get_text()
                 except IndexError:
                     experience = None
             else:
@@ -893,7 +895,7 @@ class SuperjobParserSearch(BaseParserSearchHTML):
     def get_last_position(self, html):
         raw_data = self._get_target('last_position', html)
         if raw_data:
-            list_char = re.findAll(
+            list_char = re.findall(
                 "[^<span class='sj_match_highlight'>][^</span>]",
                 raw_data
             )
@@ -904,12 +906,163 @@ class SuperjobParserSearch(BaseParserSearchHTML):
         return last_position
 
 
-#class SuperjobParserResume(BaseParserResumeHTML):
+class SuperjobParserResume(BaseParserResumeHTML):
+    container_error = Expression(tea='div',
+                                 attribute='class',
+                                 value='ResumeMainHRNew_content')
+    container_gender = Expression(tea='div',
+                                  attribute='class',
+                                  value='ResumeMainHRNew_content')
+    container_phone = Expression(tea='div',
+                                 attribute='class',
+                                 value='ResumeMainHRNew_content')
+    container_email = Expression(tea='div',
+                                 attribute='class',
+                                 value='ResumeMainHRNew_content')
+    container_city = Expression(tea='div',
+                                 attribute='class',
+                                 value='ResumeMainHRNew_content')
+    container_metro_station = Expression(
+                                tea='div',
+                                attribute='class',
+                                value='ResumeMainHRNew_content'
+    )
+    container_education = Expression(tea='div',
+                                     attribute='class',
+                                     value='ResumeMainHRNew_content')
+    container_experience = Expression(tea='div',
+                                      attribute='class',
+                                      value='ResumeDetailsNew_row')
+    container_full_name = Expression(tea='div',
+                                     attribute='class',
+                                     value='ResumeMainHRNew_content')
+    container_key_words = None
+
+    target_error = Expression(tag='div',
+                              attribute='class',
+                              value='error')
+    target_gender = Expression(tag='div')
+    target_phone = Expression(tag='div',
+                              attribute='class',
+                              value='m_t_2')
+    target_email = Expression(tag='div',
+                              attribute='class',
+                              value='m_t_0')
+    target_city = Expression(tag='div')
+    target_metro_station = Expression(tag='div')
+    target_education = Expression(tag='div')
+    target_experience = Expression(tag='div',
+                                   attribute='class',
+                                   value='sj_block m_b_2 sj_h3')
+    target_first_name = Expression(tag='div',
+                                   attribute='class',
+                                   value='sj_h3')
+    target_last_name = Expression(tag='div',
+                                   attribute='class',
+                                   value='sj_h3')
+    target_middle_name = Expression(tag='div',
+                                   attribute='class',
+                                   value='sj_h3')
+    target_key_words = Expression()
 
 
-#class AvitoParserSearch(BaseParserSearchHTML):
+class AvitoParserSearch(BaseParserSearchHTML):
+    container_age = Expression(tag='div',
+                               attribute='class',
+                               value='data')
+    container_experience = Expression(tag='div',
+                                      attribute='class',
+                                      value='data')
+    #container_last_position = None
+    #container_organization_name = None
 
+    target_error = Expression(tag='div',
+                              attribute='class',
+                              value='nulus')
+    target_title_resume = Expression(tag='a',
+                                     attribute='class',
+                                     value='item-description-title-link')
+    target_salary = Expression(tag='div',
+                               attribute='class',
+                               value='about')
+    target_age = Expression(tag='p')
+    target_experience = Expression(tag='p')
+    target_last_position = Expression(tag='span',
+                                      attribute='class',
+                                      value='place-work-position')
+    target_organization_name = Expression(
+                                tag='span',
+                                attribute='class',
+                                value='place-work-org'
+    )
+    target_url = Expression(tag='a',
+                            attribute='class',
+                            value='item-description-title-link')
+    target_last_update = Expression(tag='div',
+                                    attribute='class',
+                                    value='date c-2')
+    target_body = Expression(tag='div',
+                             attribute='class',
+                             value='description item_table-description')
 
+    def _get_position_target(slf, target_name, html, 
+                             element_position, target_position):
+        elemts = self._get_more_target(target_name, html)
+        
+        if elemts:
+            try:
+                target_element = elemts[element_position]
+            except IndexError:
+                target_element = None
+            
+            if target_element:
+                target_value = target_element.get_text()
+                list_value = target_value.split(',')
+                try:
+                    target_data = list_value[target_position]
+                except IndexError:
+                    target_data = None
+            else:
+                target_data = None
+        else:
+            target_data = None
+        
+        return target_data
+        
+    def get_age(self, html):
+        target_element = self._get_position_target('age', html, 0, 1)
+            
+        if target_element:
+            age_list = re.findall(r'\d{2}', target_element)
+            age_str = str().join(age_list)
+            age = age_str
+        else:
+            age = None
+            
+        return age
+        
+    def get_experience(self, html):
+        target_element = self._get_position_target('experience', html, 0, 2)
+            
+        if target_element:
+            experience_list = re.findall(r'\d{2}', target_element)
+            experience_str = str().join(experience_list)
+            experience = experience_str
+        else:
+            experience = None
+            
+        return experience
+        
+    def get_url(self, html):    
+        element_html = self._get_target('url', html, return_html_node=True)
+        if element_html:
+            local_url = element_html['href']
+            url = 'https://www.avito.ru' + local_url
+        else:
+            url = None
+        return url
+        
+        
 #class AvitoParserResume(BaseParserResumeHTML):
 
 
@@ -928,7 +1081,7 @@ if __name__ == '__main__':
     class_hh = HhParserResume()
     data = parser_resume(cls=class_hh, html=html_content)
     print(data)
-    '''
+    #
     PATH_FILE = 'D:\git-project\parserHH\ResumesIdBase'
     namber_page = 0
     resume_list = []
@@ -1032,10 +1185,13 @@ if __name__ == '__main__':
             continue
     file_search.close()
     print('Count error = %i' %(error_stak))
-    '''
+    #
     resume_list = []
     class_zp_search = ZarplataParserSearch()
     begin_all_time = time.time()
+    date_performance = date.strftime('%d%m%G%H%M')
+    PATH_FILE = 'D:\git-project\parserHH\ResumesIdBase'
+    search_file = PATH_FILE + '\search_%s.csv' %(date_performance)
     searchSpeak ="https://api.zp.ru/v1/resumes/?geo_id=1177&limit=100&q=Siebel&state=1"
     connect = urllib.urlopen(searchSpeak)
     content_html = connect.read()
@@ -1046,8 +1202,7 @@ if __name__ == '__main__':
     spent_all = (end_all_time - begin_all_time) / 60
     print('spent >>', spent_all)
     print('Count = ', len(resume_list))
-    file_search = open(
-                    'D:\git-project\parserHH\ResumesIdBase\search_zp.txt',   'bw')
+    file_search = open(search_file, 'bw')
     for record_item in resume_list:
         print(record_item['age'])
         data_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(
@@ -1063,3 +1218,100 @@ if __name__ == '__main__':
         file_search.write(format)
     file_search.close()
     '''
+    PATH_FILE = 'D:\git-project\parserHH\ResumesIdBase'
+    namber_page = 0
+    resume_list = []
+    class_hh_search = SuperjobParserSearch()
+    begin_all_time = time.time()
+    begin_ = time.time()
+    while True:
+        random_sequence = random()*10**15
+        hesh = int(random_sequence)
+        begin_time = time.time()
+        searchSpeak = 'https://www.superjob.ru/resume/search_resume.html?sbmit=1&t[]=4&keywords[0][srws]=7&keywords[0][skwc]=and&keywords[0][keys]=Siebel&search_hesh=%i&main=1&page=%i' %(hesh, namber_page)
+        try:
+            connect = urllib.urlopen(searchSpeak)
+        except HTTPError:
+            content_html = connect.read()
+            connect.close()
+            break
+        content_html = connect.read()
+        connect.close()
+        try:
+            resumes = parser_search(cls=class_hh_search, html=content_html)
+        except ParserError:
+            break
+        resume_list += resumes
+        end_time = time.time()
+        spent = end_time - begin_time
+        print('namber_page = %i, spent = %f' %(namber_page, spent))
+        if namber_page >= 50:
+            break
+        namber_page += 1
+    end_all_time = time.time()
+    spent_all = (end_all_time - begin_all_time) / 60
+    print('spent >>', spent_all)
+    print('Count = ', len(resume_list))
+    resume_index = 0
+    error_stak = 0
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d%m%G%H%M')
+    search_file = PATH_FILE + '\search_%s.csv' %(date_performance)
+    error_file = PATH_FILE + '\error_%s.csv' %(date_performance)
+    file_error = open(error_file, 'bw')
+    #begin_resumes =  time.time()
+    #for resume in resume_list:
+        #begin_resume = time.time()
+        #try:
+        #    connect = urllib.urlopen(resume['url'])
+        #except URLError:
+        #    error_stak += 1
+        #    error_str = '%s;\n' %(resume['url'])
+        #    format = error_str.encode('utf-8')
+        #    file_error.write(format)
+        #    continue
+        #html_content = connect.read()
+        #connect.close()
+        #class_hh = HhParserResume()
+        #data = parser_resume(cls=class_hh, html=html_content)
+        #resume.setdefault('gender', data['gender'])
+        #resume.setdefault('first_name', data['first_name'])
+        #resume.setdefault('last_name', data['last_name'])
+        #resume.setdefault('middle_name', data['middle_name'])
+        #resume.setdefault('phone', data['phone'])
+        #resume.setdefault('email', data['email'])
+        #resume.setdefault('city', data['city'])
+        #resume.setdefault('metro_station', data['metro_station'])
+        #resume.setdefault('education', data['education'])
+        #resume.setdefault('experience', data['experience'])
+        #end_resume = time.time()
+        #spant_resume = (end_resume - begin_resume) / 60
+        #print('Resume - %i, spent = %f' %(resume_index,
+        #                                  spant_resume))
+        #resume_index += 1
+    #end_resumes = time.time()
+    #file_error.close()
+    #spent_resumes = (end_resumes - begin_resumes) / 60
+    #print('Spent >>', spent_resumes)
+    end_ = time.time()
+    spent_ = (end_ - begin_) / 60
+    print('All spent time = %f' %(spent_))
+    file_search = open(search_file, 'bw')
+    for record_item in resume_list:
+        try:
+            data_str = '%s;%s;%s;%s;%s;%s;%s;%s;\n' %(
+                                record_item['title_resume'],
+                                record_item['salary'],
+                                record_item['age'],
+                                record_item['experience'],
+                                record_item['last_position'],
+                                record_item['organization_name'],
+                                record_item['url'],
+                                record_item['last_update']
+            )
+            format = data_str.encode('utf-8')
+            file_search.write(format)
+        except KeyError:
+            continue
+    file_search.close()
+    print('Count error = %i' %(error_stak))
