@@ -1063,11 +1063,83 @@ class AvitoParserSearch(BaseParserSearchHTML):
         return url
         
         
-#class AvitoParserResume(BaseParserResumeHTML):
+class AvitoParserResume(BaseParserResumeHTML):
+    container_error = None
+    container_head = None
+    container_gender = None
+    container_phone = None
+    container_email = None
+    container_city = Expression(
+                        tag='div',
+                        attribute='class',
+                        value='item-view-right'
+    )
+    container_metro_station = None
+    container_education = Expression(
+                            tag='div',
+                            attribute='class',
+                            value='item-params item-params_type-one-colon'
+    )
+    container_full_name = None
+    container_key_words = None
+
+    target_error = Expression(tag='div',
+                              attribute='class',
+                              value='nulus')
+    target_gender = Expression(
+                        tag='li',
+                        attribute='class',
+                        value='item-params-list-item'
+    )
+    target_phone = None
+    target_email = None
+    target_city = Expression(
+                        tag='div',
+                        attribute='class',
+                        value='seller-info-value')
+    target_metro_station = Expression(
+                        tag='div',
+                        attribute='class',
+                        value='seller-info-value')
+    target_education = Expression()
+    target_experience = Expression()
+    target_first_name = Expression()
+    target_last_name = Expression()
+    target_middle_name = Expression()
+    target_key_words = Expression()
 
 
-#class RabotaParserSearch(BaseParserSearchHTML):
+class RabotaParserSearch(BaseParserSearchHTML):
+    container_salary = Expression(
+                        tag='div',
+                        attribute='class',
+                        value='h-box-wrapper__centercol'
+    )                   
 
+    target_error = Expression(tag='p',
+                              attribute='class',
+                              value='text_14 bold mb_10')
+    target_title_resume = Expression(tag='a',
+                                     attribute='target',
+                                     value='_blank')
+    target_salary = Expression(tag='p'
+                               attribute='class',
+                               value='text_16')
+    target_age = Expression(tag='p',
+                            attribute='class',
+                            value='text_12')
+    target_experience = Expression(tag='p',
+                                   attribute='class',
+                                   value='text_12')
+    target_last_position = Expression()
+    target_organization_name = Expression()
+    target_url = Expression(tag='a',
+                            attribute='target',
+                            value='_blank')
+    target_last_update = Expression()
+    target_body = Expression(tag='div',
+                             attribute='class',
+                             value='h-box-wrapper')
 
 #class RabotaParserResume(BaseParserResumeHTML):
 
