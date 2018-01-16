@@ -1007,6 +1007,16 @@ class AvitoParserSearch(BaseParserSearchHTML):
 
     def _get_position_target(slf, target_name, html, 
                              element_position, target_position):
+        """
+            Base method for pars case:
+            <ul>
+              <li class="...">...</li>
+              .......................
+              <li class="...">...</li>
+              .......................
+              <li class="...">...</li>
+            </ul>
+        """
         elemts = self._get_more_target(target_name, html)
         
         if elemts:
@@ -1061,8 +1071,8 @@ class AvitoParserSearch(BaseParserSearchHTML):
         else:
             url = None
         return url
-        
-        
+
+
 class AvitoParserResume(BaseParserResumeHTML):
     container_error = None
     container_head = None
@@ -1141,9 +1151,85 @@ class RabotaParserSearch(BaseParserSearchHTML):
                              attribute='class',
                              value='h-box-wrapper')
 
-#class RabotaParserResume(BaseParserResumeHTML):
+
+class RabotaParserResume(BaseParserResumeHTML):
+    container_metro_station = Expression(tag='div',
+                                         attribute='id',
+                                         value='resume_metro_list')
+    container_education = Expression(tag='div',
+                                     attribute='class',
+                                     value='w100 res-card-tbl')
+    container_experience = Expression(tag='div',
+                                      attribute='class',
+                                      value='w100 res-card-tbl')
+    container_full_name = None
+    container_key_words = None
+
+    target_error = Expression(tag='p',
+                              attribute='class',
+                              value='text_14 bold mb_10')
+    target_gender = Expression(tag='p',
+                               attribute='class',
+                               value='b-sex-age')
+    target_phone = Expression()
+    target_email = Expression()
+    target_city = Expression(tag='p',
+                             attribute='class',
+                             value='b-city-info mt_10')
+    target_metro_station = Expression()
+    target_education = Expression(tag='p',
+                                  attribute='class',
+                                  value='text_18 bold edu-type-ttl')
+    target_experience = Expression(tag='span',
+                                   attribute='class',
+                                   value='text_18 bold exp-years')
+    target_first_name = None
+    target_last_name = None
+    target_middle_name = None
+    target_key_words = None
+
+    def _get_choice_target(self, target_name, html,
+                           psition, separator=','):
+        data_str = self._get_target(target_name, html)
+        
+        if data_str:
+            data_list = data_str.split(separator)
+            try:
+                value = data_list[psition]
+            except IndexError:
+                value = None
+        else:
+            value = None
+            
+        return value
+        
+    def get_age(self, html):
+        age_str = self._get_choice_target('age', html, 0)
+        
+        if age_str:
+            age_list = re.findall('\d{2}', age_str)
+            try:
+                age = age_list[0]
+            except IndexError:
+                age = None
+        else:
+            age = None
+            
+        return age
+        
+    def get_gender(self, html);
+        gender_str = self._get_choice_target('gender', html, 1)
+        
+        if gender_str:
+            gender_list = re.findall('\S', gender_str)
+            gender = str().join(gender_list)
+        else:
+            gender = None
+            
+        return gender
 
 
+#class 
 if __name__ == '__main__':
     '''
     url = 'https://hh.ru/resume/e9bb81ccff0337fea50039ed1f577a68444648'
