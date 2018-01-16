@@ -1124,7 +1124,12 @@ class RabotaParserSearch(BaseParserSearchHTML):
                         tag='div',
                         attribute='class',
                         value='h-box-wrapper__centercol'
-    )                   
+    )
+    container_last_update = Expression(
+                                tag='div',
+                                attribute='class',
+                                value='h-box-wrapper__centercol'
+    )
 
     target_error = Expression(tag='p',
                               attribute='class',
@@ -1146,7 +1151,11 @@ class RabotaParserSearch(BaseParserSearchHTML):
     target_url = Expression(tag='a',
                             attribute='target',
                             value='_blank')
-    target_last_update = Expression()
+    target_last_update = Expression(
+                            tag='p',
+                            attribute='class',
+                            value='box-wrapper__descr_12grey mt_10'
+    )
     target_body = Expression(tag='div',
                              attribute='class',
                              value='h-box-wrapper')
@@ -1229,7 +1238,115 @@ class RabotaParserResume(BaseParserResumeHTML):
         return gender
 
 
-#class 
+class FarpostParserSearch(BaseParserSearchHTML):
+    container_error = None
+    container_title_resume = Expression(tag='div',
+                                        attribute='class',
+                                        value='priceCell')
+    container_salary = Expression(tag='div',
+                                  attribute='class',
+                                  value='priceCell')
+    container_age = None
+    container_experience = None
+    container_last_position = None
+    container_organization_name = None
+    container_url = None
+    container_last_update = Expression(tag='div',
+                                       attribute='class',
+                                       value='priceCell')
+    container_body = None
+
+    target_error = None
+    target_title_resume = Expression(tag='a',
+                                     attribute='class',
+                                     value='bulletinLink')
+    target_salary = Expression(tag='span',
+                               attribute='data-role',
+                               value='price')
+    target_age = Expression()
+    target_experience = Expression(tag='div',
+                                   attribute='class',
+                                   value='searchSnippet')
+    target_last_position = None
+    target_organization_name = None
+    target_url = Expression()
+    target_last_update = Expression(tag='td',
+                                    attribute='class',
+                                    value='dateCell')
+    target_body = Expression(tag='tr',
+                             attribute='class',
+                             value='bull-item')
+
+
+class FarpostParserResume(BaseParserResumeHTML):
+    container_error = None
+    container_head = None
+    container_gender = None
+    container_phone = None
+    container_email = None
+    container_city = None
+    container_metro_station = None
+    container_education = None
+    container_experience = None
+    container_full_name = None
+    container_key_words = None
+
+    target_error = Expression(tag='div',
+                              attribute='class',
+                              value='notificationPlate')
+    target_gender = Expression(tag='span',
+                               attribute='data-field',
+                               value='sex-maritalStatus-hasChildren'
+    )
+    target_phone = Expression(tag='div',
+                              attribute='class',
+                              value='new-contacts__td new-contact__phone')
+    target_email = Expression(tag='a',
+                              attribute='class',
+                              value='new-contact__email')
+    target_city = Expression(tag='span',
+                             attribute='data-field',
+                             value='district')
+    target_metro_station = Expression()
+    target_education = Expression()
+    target_experience = Expression()
+    target_first_name = None
+    target_last_name = None
+    target_middle_name = None
+    target_key_words = Expression(tag='p',
+                                  attribute='data-field',
+                                  value='resumeSkills')
+
+
+class RabotavgorodeParserSearch(BaseParserSearchHTML):
+    target_error = None
+    target_title_resume = Expression(tag='a',
+                                     attribute='target',
+                                     value='_blank')
+    target_salary = Expression(tag='span',
+                               attribute='class',
+                               value='sal')
+    target_age = Expression(tag='span',
+                            attribute='class',
+                            value='addr')
+    target_experience = None
+    target_last_position = Expression(tag='p')
+    target_organization_name = Expression(tag='p')
+    target_url = Expression(tag='a',
+                            attribute='target',
+                            value='_blank')
+    target_last_update = Expression(tag='div',
+                                    attribute='class',
+                                    value='date')
+    target_body = Expression(tag='div',
+                             attribute='class',
+                             value='info')
+
+
+#class RabotavgorodeParserResume(BaseParserResumeHTML):
+
+
+
 if __name__ == '__main__':
     '''
     url = 'https://hh.ru/resume/e9bb81ccff0337fea50039ed1f577a68444648'
