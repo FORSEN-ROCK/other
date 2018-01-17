@@ -1343,8 +1343,31 @@ class RabotavgorodeParserSearch(BaseParserSearchHTML):
                              value='info')
 
 
-#class RabotavgorodeParserResume(BaseParserResumeHTML):
+class RabotavgorodeParserResume(BaseParserResumeHTML):
+    container_error = None
+    container_head = None
+    container_gender = None
+    container_phone = None
+    container_email = None
+    container_city = None
+    container_metro_station = None
+    container_education = None
+    container_experience = None
+    container_full_name = None
+    container_key_words = None
 
+    target_error = None
+    target_gender = Expression(tag='td')
+    target_phone = Expression(tag='td')
+    target_email = Expression(tag='td')
+    target_city = Expression(tag='td')
+    target_metro_station = Expression(tag='td')
+    target_education = Expression(tag='td')
+    target_experience = Expression(tag='td')
+    target_first_name = Expression(tag='td')
+    target_last_name =Expression(tag='td')
+    target_middle_name = Expression(tag='td')
+    target_key_words = Expression(tag='td')
 
 
 if __name__ == '__main__':
