@@ -7,6 +7,7 @@ import urllib.request as urllib
 from urllib.error import HTTPError, URLError
 from random import random
 from bs4 import BeautifulSoup
+from bs4 import NavigableString
 
 
 class BaseException(Exception):
@@ -212,6 +213,8 @@ class BaseParserSearchHTML(object):
 
 # Parser for resume
 class BaseParserResumeHTML(object):
+    find_hash = None
+
     container_error = None
     container_head = None
     container_gender = None
@@ -286,10 +289,10 @@ class BaseParserResumeHTML(object):
         Returned HTML nodes
         """
         target_attr = getattr(self, 'target_' + target_name, None)
-        
+
         if not target_attr:
             raise ExpressionError("No goal %s specified" % target_name)
-        
+
         if html: 
             elements = html.findAll(
                 target_attr.tag,
@@ -297,9 +300,96 @@ class BaseParserResumeHTML(object):
             )
         else:
             elements = None
-            
+
         return elements
+
+    def _get_children_elements(self, html_element):
+        """Base method for get children element html_element
+        Takes parent HTML - node
+        Returned HTML - list children elements  
+        """
+        child_list = [
+                child_item for child_item in html_element.children if
+                child_item is not NavigableString
+        ]
+        return child_list
+
+    def _get_position_element(self, target_name, html, position=0, 
+                              hash_flag=False):
+        """Base method get element from a given position
+        For the case of repeated repetition
+        Takes HTML, target_name and Position
+        Returned HTML - node
+        """
+        if not self.find_hash:
+            elements_list = self._get_more_target(target_name, html)
+
+            if hash_flag:
+                self.find_hash = elements_list
+
+        else:
+            elements_list = self.find_hash
+
+        try:
+            element = elements_list[position]
+        except IndexError:
+            element = None
+        return element
+
+    def _get_table_value(self, html_table, row=0, column=0):
+        """Base method get target position (row, column) for table
+        Takes HTML - Table
+        Returned target element from a given position
+        """
+        row_elements = self._get_children_elements(html_table)
+        column_elements = [
+            self._get_children_elements(item) for item in
+            row_elements
+        ]
         
+        try:
+            column_element = column_elements[row][column]
+        except IndexError:
+            column_element = None
+
+        if column_element:
+            value = column_element.get_text()
+        else:
+            value = None
+
+        return value
+
+    def _get_list_value(self, html_list, siquence_numder=0):
+        """Base method get value for HTML - list
+        Takes HTML - list
+        Returned item-list value
+        """
+        item_list = self._get_children_elements(html_list)
+        try:
+            item_list_tag = item_list[siquence_numder]
+        except IndexError:
+            item_list_tag = None
+            
+        if item_list_tag:
+            value = item_list_tag.get_text()
+        else:
+            value = None
+            
+        return value
+
+    def _get_name_part(self, html, target_name, name_index):
+        full_name = self._get_target(target_name, html)
+        
+        if full_name:
+            try:
+                name = full_name.split(' ')[name_index]
+            except IndexError:
+                name = None
+        else:
+            name = None
+
+        return name
+
     def get_container_error(self, html):
         return self._get_container('error', html)
 
@@ -363,19 +453,6 @@ class BaseParserResumeHTML(object):
 
     def get_experience(self, html):
         return self._get_target('experience', html)
-
-    def _get_name_part(self, html, target_name, name_index):
-        full_name = self._get_target(target_name, html)
-        
-        if full_name:
-            try:
-                name = full_name.split(' ')[name_index]
-            except IndexError:
-                name = None
-        else:
-            name = None
-
-        return name
 
     def get_firts_name(self, html):
         return self._get_name_part(html, 'first_name', 1)
