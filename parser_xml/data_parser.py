@@ -4,13 +4,17 @@ import re
 import xml.etree.ElementTree as etree
 
 
-PATH_DIR_EVENTS_SOURCE = r'D:\git-project\parser_xml\events'
+PATH_EVENTS_SOURCE = r'D:\git-project\parser_xml\events'
 
-PATH_DIR_CNDIDATES_SOURCE = r'D:\git-project\parser_xml\canditates'
+PATH_CNDIDATES_SOURCE = r'D:\git-project\parser_xml\canditates'
 
 PATH_SAVE_EVENTS = r'D:\git-project\parser_xml\flet_events'
 
 PATH_SAVE_CANDIDATES = r'D:\git-project\parser_xml\flet_candidates'
+
+PATH_VACANCY_SOURCE = r'D:\git-project\parser_xml\vacancy'
+
+PATH_VACANCY_SAVE = r'D:\git-project\parser_xml\flet_vacancy'
 
 
 class BaseException(Exception):
@@ -49,6 +53,35 @@ class BaseParserXML(object):
             result = ''
 
         return result
+
+    def _get_more_target(self, target_name, xml_content,
+                         returned_xml_elements=False):
+        """Find all target value
+        Takes target name and xml content
+        Returned list values
+        """
+        target_attr = getattr(self, 'target_' + target_name, None)
+
+        if not target_attr:
+            raise ParserError("No goal %s specified" % target_name)
+
+        if xml_content:
+            tag_list = xml_content.findall(target_attr)
+        else:
+            tag_list = []
+
+        if tag_list:
+
+            if not returned_xml_elements:
+                value_list = [
+                    tag.text for tag in tag_list
+                ]
+            else:
+                value_list = tag_list
+        else:
+            value_list = []
+
+        return value_list
 
 
 class EventParse(BaseParserXML):
@@ -145,10 +178,14 @@ class CandidateParser(BaseParserXML):
         return self._get_target('age', xml_content)
 
     def get_homme_phone(self, xml_content):
-        return self._get_target('homme_phone', xml_content)
+        raw = self._get_target('homme_phone', xml_content)
+        data = raw.replace(';', ',')
+        return data
 
     def get_phone(self, xml_content):
-        return self._get_target('phone', xml_content)
+        raw = self._get_target('phone', xml_content)
+        data = raw.replace(';', ',')
+        return data
 
     def get_email(self, xml_content):
         return self._get_target('email', xml_content)
@@ -182,6 +219,91 @@ class CandidateParser(BaseParserXML):
 
     def get_main_vacancy_id(self, xml_content):
         return self._get_target('main_vacancy_id', xml_content)
+
+
+class VacancyParser(BaseParserXML):
+    target_id = 'id'
+    target_name = 'name'
+    target_code = 'code'
+    target_division = 'division_id'
+    target_created = 'start_date'
+    target_final_candidate = 'final_candidate_id'
+    target_source = 'final_candidate_source_id'
+    target_city = 'location_id'
+    target_position_name = 'position_name'
+    target_comment = 'comment'
+    target_records = 'records'
+
+    target_record = 'record'
+    target_event_date = 'date'
+    target_type = 'type_id'
+    target_status = 'state_id'
+
+    def get_id(self, xml_content):
+        return self._get_target('id', xml_content)
+
+    def get_name(self, xml_content):
+        return self._get_target('name', xml_content)
+
+    def get_code(self, xml_content):
+        return self._get_target('code', xml_content)
+
+    def get_division(self, xml_content):
+        return self._get_target('division', xml_content)
+
+    def get_created(self, xml_content):
+        return self._get_target('created', xml_content)
+
+    def get_final_candidate(self, xml_content):
+        return self._get_target('final_candidate', xml_content)
+
+    def get_source(self, xml_content):
+        return self._get_target('source', xml_content)
+
+    def get_city(self, xml_content):
+        return self._get_target('city', xml_content)
+
+    def get_position_name(self, xml_content):
+        return self._get_target('position_name', xml_content)
+
+    def get_comment(self, xml_content):
+        raw = self._get_target('comment', xml_content)
+        data = raw.replace(';', ',')
+        data = data.replace('\r\n', ' ')
+        return data
+
+    def get_history(self, xml_content):
+        tag_records = self._get_target('records', xml_content,
+                                       return_xml_element=True)
+        tag_list = self._get_more_target('record', tag_records,
+                                         returned_xml_elements=True)
+        status_list = []
+
+        for tag in tag_list:
+            status_dict = {}
+            event_date = self._get_target('event_date', tag)
+            type = self._get_target('type', tag)
+            status = self._get_target('status', tag)
+
+            status_dict.setdefault('date', event_date)
+            status_dict.setdefault('type', type)
+            status_dict.setdefault('status', status)
+
+            status_list.append(status_dict)
+
+
+        return status_list
+
+
+class VacancyCandidates(BaseParserXML):
+    target_vacansie = 'id'
+    target_candidate = 'multi_final_candidate_id'
+
+    def get_vacancy(self, xml_content):
+        return self._get_target('vacansie', xml_content)
+
+    def get_candidates(self, xml_content):
+        return self._get_more_target('candidate', xml_content)
 
 
 def event_parser(cls, xml_content):
@@ -220,7 +342,7 @@ def event_parser(cls, xml_content):
     return event
 
 def event_save(event_list):
-    file = codecs.open(PATH_SAVE_EVENTS + '\\' +'event_result.csv', 
+    file = codecs.open(PATH_SAVE_EVENTS + '\\' + 'event_result.csv', 
                        mode='bw', encoding='Windows-1251')
     for event in event_list:
         data_str = "%s;%s;%s;%s;%s;%s;%s;%s\n" %(
@@ -240,7 +362,7 @@ def event_save(event_list):
 def event_scan():
     event_xml_parser = EventParse()
     event_list = []
-    for path_dir, dirs, files in os.walk(PATH_DIR_EVENTS_SOURCE):
+    for path_dir, dirs, files in os.walk(PATH_EVENTS_SOURCE):
         for file in files:
             file_source = path_dir + '\\' + file
             tree = etree.parse(file_source)
@@ -366,7 +488,6 @@ def clear_attachments(file_source):
     file_in = codecs.open(file_source, mode='br')
     data = file_in.read()
     file_in.close()
-    file_out = codecs.open(file_source, mode='bw')
     reg_exp = b'<attachments>.+</attachments>'
     attachments = re.findall(reg_exp, data)
     try:
@@ -376,20 +497,19 @@ def clear_attachments(file_source):
 
     if attachments_sub_str:
         data = data.replace(attachments_sub_str, b'')
+        file_out = codecs.open(file_source, mode='bw')
+        file_out.write(data)
+        file_out.close()
         execution = True
     else:
         execution = False
 
-    file_out.write(data)
-    file_out.close()
-
     return execution
-
 
 def candidate_scan():
     candidate_xml_parser = CandidateParser()
     candidate_list = []
-    for path_dir, dirs, files in os.walk(PATH_DIR_CNDIDATES_SOURCE):
+    for path_dir, dirs, files in os.walk(PATH_CNDIDATES_SOURCE):
         for file in files:
             file_source = path_dir + '\\' + file
             try:
@@ -408,10 +528,115 @@ def candidate_scan():
 
     candidate_save(candidate_list)
 
+def vacancy_parser(cls, xml_content):
+    if not cls:
+        raise ParserError("Required argument is None")
+
+    if not xml_content:
+        raise ParserError("XML is None")
+
+    id = cls.get_id(xml_content)
+    name = cls.get_name(xml_content)
+    code = cls.get_code(xml_content)
+    division = cls.get_division(xml_content)
+    created = cls.get_created(xml_content)
+    final_candidate = cls.get_final_candidate(xml_content)
+    source = cls.get_source(xml_content)
+    city = cls.get_city(xml_content)
+    position_name = cls.get_position_name(xml_content)
+    comment = cls.get_comment(xml_content)
+
+    history = cls.get_history(xml_content)
+    for item in history:
+        item.setdefault('id', id)
+        item.setdefault('name', name)
+        item.setdefault('code', code)
+        item.setdefault('division', division)
+        item.setdefault('created', created)
+        item.setdefault('final_candidate', final_candidate)
+        item.setdefault('source', source)
+        item.setdefault('city', city)
+        item.setdefault('position_name', position_name)
+        item.setdefault('comment', comment)
+
+    return history
+
+def vacancy_save(vacancy_list):
+    file = codecs.open(PATH_VACANCY_SAVE + '\\' + 'vacancy_result.csv', 
+                       mode='bw', encoding='Windows-1251')
+    for vacancy in vacancy_list:
+        data_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n" %(
+                                        vacancy['id'],
+                                        vacancy['name'],
+                                        vacancy['code'],
+                                        vacancy['division'],
+                                        vacancy['created'],
+                                        vacancy['final_candidate'],
+                                        vacancy['source'],
+                                        vacancy['city'],
+                                        vacancy['position_name'],
+                                        vacancy['status'],
+                                        vacancy['date'],
+                                        vacancy['type'],
+                                        vacancy['comment']
+        )
+        #data = data_str.encode('Windows-1251')
+        file.write(data_str)
+    file.close()
+
+def vacancy_scan():
+    vacancy_xml_parser = VacancyParser()
+    vacancy_candidate_xmal_parser = VacancyCandidates()
+    vacancy_list = []
+    vacancy_candidates_list = []
+    for path_dir, dirs, files in os.walk(PATH_VACANCY_SOURCE):
+        for file in files:
+            file_source = path_dir + '\\' + file
+            tree = etree.parse(file_source)
+            root = tree.getroot()
+            vacancy = vacancy_parser(vacancy_xml_parser, root)
+            vacancy_candidates = vacancy_candidates_parser(
+                                        vacancy_candidate_xmal_parser,
+                                        root
+            )
+            vacancy_list += vacancy
+            vacancy_candidates_list += vacancy_candidates
+
+    vacancy_save(vacancy_list)
+    vacancy_candidates_save(vacancy_candidates_list)
+
+def vacancy_candidates_parser(cls, xml_content):
+    if not cls:
+        raise ParserError("Required argument is None")
+
+    if not xml_content:
+        raise ParserError("XML is None")
+
+    vacabcy_candidates_list = []
+    vacancy = cls.get_vacancy(xml_content)
+    candidates_list = cls.get_candidates(xml_content)
+    for candidate in candidates_list:
+        vacancy_candidates = {}
+        vacancy_candidates.setdefault('vacancy', vacancy)
+        vacancy_candidates.setdefault('candidate', candidate)
+        vacabcy_candidates_list.append(vacancy_candidates)
+    return vacabcy_candidates_list
+
+def vacancy_candidates_save(vacancy_candidates_list):
+    file = codecs.open(PATH_VACANCY_SAVE + '\\' + 
+                       'vacancy_candidates_result.csv', 
+                       mode='bw', encoding='Windows-1251')
+    for vacancy in vacancy_candidates_list:
+        data_str = "%s;%s\n" %(vacancy['vacancy'], vacancy['candidate'])
+        #data = data_str.encode('Windows-1251')
+        file.write(data_str)
+    file.close()
+
 if __name__ == '__main__':
-    print('Event Start')
-    event_scan()
-    print('Event End')
-    print('Candidate Start')
-    candidate_scan()
-    print('andidate End')
+    vacancy_scan()
+    #print('Event Start')
+    #event_scan()
+    #print('Event End')
+    #print('Candidate Start')
+    #candidate_scan()
+    #print('Candidate End')
