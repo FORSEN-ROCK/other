@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+        <link  rel="stylesheet" href="seizureStyle.css"/>
+        <script src="searchLogec.js"></script>
+        <meta charset=UTF-8">
+        <title>Seizure</title>
+    </html>
+    <body>
+    <form id="searchEntry">
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="3">
+                        <h1>Поиск сотрудников:</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <p><input type="entry" placeholder="Введите запрос" size="110" name="searchField"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" placeholder="Задайте размер выборки записей" name="limitField">
+                    </td>
+                    <td>
+                        <p><input type="button" value="Поиск" name="run" data-command="ranSearch"></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+        <div class="Main">
+            <span><h2>Результаты поиска:</h2></span>
+            <div id="selectResumes" class="ListOfSelect">
+                <!--add request resume-->
+                    <!--script src="popup.js"></script-->
+                <ul style="list-style-type:none" id="searchingResults">
+                </ul>
+            </div>
+        </div>
+        
+    </body>
+</html>

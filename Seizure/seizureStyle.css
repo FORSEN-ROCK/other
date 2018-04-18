@@ -1,0 +1,15 @@
+div.Main{
+    
+}
+div.ListOfSelect{
+    
+}
+div.OptionPanel {
+    width: 300px;
+    height: 30px;
+    background: #CCCCCC;
+}
+
+div.itemList {
+    border: 2px solid #000000;
+}

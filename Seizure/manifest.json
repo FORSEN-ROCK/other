@@ -1,0 +1,46 @@
+{
+  "manifest_version": 2,
+  "name": "Seizure",
+  "version": "1.0",
+  "offline_enabled": false,
+  "options_page": "options.html",
+  "description": "description",
+  
+  "icons": {
+    "16": "logo.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [ 
+        "https://hh.ru/*",
+        "https://www.superjob.ru/*",
+        "https://www.rabota.ru/*",
+        "https://www.zarplata.ru/resumes/*",
+        "https://www.avito.ru/*/rezume/*"
+      ],
+      "js": [ "content.js" ]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "html": ["background.html","parserWidget _new_add_button.html"]
+  },
+  "permissions": [
+    "contextMenus",
+    "https://www.hh.ru/*",
+    "https://superjob.ru/*",
+    "https://www.rabota.ru/*",
+    "https://www.zarplata.ru/resumes/*",
+    "https://www.avito.ru/*/rezume/*",
+    "tabs"
+  ],
+
+      "browser_action": {
+        "default_title": "Seizure",
+        "default_icon": "logo.png",
+        "default_popup": "popup.html"
+    }
+	
+}

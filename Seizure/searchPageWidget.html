@@ -1,0 +1,293 @@
+<html>
+    <head>
+        <title>
+        </title>
+    <style>
+        select{ 
+            height: 21px;
+            width: 169px;
+            border: 3px double;
+            padding: 0px 2px 0px 2px;
+        }
+        select.longSelect{
+            width: 352px;
+        }
+        input{
+            width: 173px;
+        }
+        input[type="text"]{
+            border: 2px solid #000000;
+        }
+        input.longInput{
+            width: 352px;
+        }
+        textarea.originalText{
+            height: 300px;
+            width: 1069px;
+            border: 2px solid #000000;
+        }
+        td{
+            padding: 2px 2px 2px 2px;
+        }
+    </style>
+    </head>
+    
+    <body>
+        <div>
+            <form name="questionnaire">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label for="code">Номер: </label>
+                            </td>
+                            <td>
+                                <label for="firstName">Имя: </label>
+                            </td>
+                            <td>
+                                <label for="lastName">Фамилия: </label>
+                            </td>
+                            <td>
+                                <label for="middleName">Отчество: </label>
+                            </td>
+                            <td>
+                                <label for="sex">Пол: </label>
+                            </td>
+                            <td>
+                                <label for="Birth">Дата рождения:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" maxlength="50" name="code">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="firstName" required>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="lastName" required>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="middleName">
+                            </td>
+                            <td>
+                                <select type="text" name="sex" required>
+                                    <option>Выбрать</option>
+                                    <option value="male">Мужской</option>
+                                    <option valye="female">Женский</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="Birth" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="homePhone">Дом.тел.:</label>
+                            </td>
+                            <td>
+                                <label for="jobPhone">Раб.телю:</label>
+                            </td>
+                            <td>
+                                <label for="mobelPhone">Моб.тел:</label>
+                            </td>
+                            <td>
+                                <label for="email_1">e-mail:</label>
+                            </td>
+                            <td>
+                                <label for="email_2">e-mail:</label>
+                            </td>
+                            <td>
+                                <label for="skype">Skype:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" maxlength="50" name="homePhone">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="jobPhone">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="mobelPhone" required>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="email_1" required>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="email_2">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="skype">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label  for="city">Город:</label>
+                            </td>
+                            <td>
+                                <label  for="address">Адрес:</label>
+                            </td>
+                            <td>
+                                <label for="region">Регион:</label>
+                            </td>
+                            <td>
+                                <label for="metroStation">Станция метро:</label>
+                            </td>
+                            <td colspan="2">
+                                <label for="education">Образование:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                <select type="text" maxlength="100" name="city" required>
+                                    <option></option>
+                                    <option value="1177">Москва</option>
+                                </select>
+                            </td>
+                            <td >
+                                <input type="text" maxlength="100" name="address" required>
+                            </td>
+                            <td>
+                                <select type="text" maxlength="50" name="region" required>
+                                <option></option>
+                                <option value="69">Академический</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select type="text" maxlength="50" name="metroStation">
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select type="text" maxlength="100" name="education" class="longSelect">
+                                    <option></option>
+                                    <option value="388">Неполное среднее</option>
+                                    <option value="389">Среднее</option>
+                                    <option value="390">Средне-специальное</option>
+                                    <option value="391">Неполное высшее</option>
+                                    <option value="392">Высшее</option>
+                                    <option value="393">Два и более высших</option>
+                                    <option value="3008">Cтудент очник</option>
+                                    <option value="3028">Cтудент заочник</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label  for="jobTitle">Предлагаемая должность:</label>
+                            </td>
+                            <td>
+                                <label  for="jobPay">Уровень ЗП:</label>
+                            </td>
+                            <td>
+                                <label for="experience">Стаж:</label>
+                            </td>
+                            <td>
+                                <label for="specialty">Специальность:</label>
+                            </td>
+                            <td>
+                                <label for="rating">рейтинг:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" maxlength="50" name="jobTitle"  class="longInput">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="jobPay">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="experience" required>
+                            </td>
+                            <td>
+                                <select type="text" maxlength="100" name="specialty" required>
+                                    <option></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="50" name="rating">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <label for="originalTextField">Исходный текст анкеты с сайта:</label>
+                            </td>
+                            <td colspan="1">
+                                <input type="button" data-comand="parse" value="Преобразовать">
+                            </td>
+                        </tr>
+                        <tr rowspan="6">
+                            <td colspan="6">
+                                <textarea size="100000" class="originalText" name="originalTextField">
+                                </textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    <script>
+        var parser = {
+            firstName:/(?:Имя.+?)([а-яА-ЯёЁ]+)/g,
+            lastName:/(?:Фамилия.+?)([а-яА-ЯёЁ]+)/g,
+            middleName:/(?:Отчество.+?)([а-яА-ЯёЁ]+)/g,
+            sex:/(?:Пол.+?)(Мужской|Женский)/g,
+            Birth:/(?:Дата рождения.+?)([0-3][0-9].[0-1][0-9].[0-9]+)/g,
+            homePhone:/(?:Тел.+?)(8.\d{3}.\d{3}.\d{2}.\d{2})/g,
+            jobPhone:/(?:Тел.+?.+?)(8.\d{3}.\d{3}.\d{2}.\d{2})/g,
+            mobelPhone:/(?:Мобильный|Сотовый|Моб.|Сот..+)((\+7|8).\d{3}.\d{3}.\d{2}.\d{2})/g,
+            email_1:/(?:E-mail.+?)(\w+@\w+\.\w{2,3})/g,
+            email_1:/(?:E-mail.+?)(\w+@\w+\.\w{2,3})/g,
+            skype:/(?:Skype.+?)([0-9a-zA-Z]+)/g,
+            city:/(?:Город.+?)([а-яА-ЯёЁ]+)/g,
+            address:/(?:Адрес.+?)(Ул.+?[а-яёА-ЯЁ]+.+? дом.+?[0-9].+)/g,
+            region:/(?:Регион.+?)([0-9а-яёА-ЯЁ].+)+/g,
+            metroStation:/(?:Станция метро.+?)([0-9а-яёА-ЯЁ].+)+/g,
+            education:/(?:Образование.+?)([а-яА-ЯёЁa-zA-Z].+)+/g,
+            jobTitle:/(?:Желаемая должность.+?)([а-яА-ЯёЁa-zA-Z].+)+/g,
+            jobPay:/(?:Зарплата.+?)([0-9]+.+? руб|Руб|дол|Дол|евр|Евр|Rub|rub|y.e)/g,
+            experience:/(?:Стаж.+?)([0-9]+.+?лет.+?[0-9]+.+месяцев)/g,
+            specialty:/(?:Специальность.+?)([а-яА-ЯёЁa-zA-Z].+)+/g,
+            rating:/./g
+            
+        }
+        function parserText(dataString, parser) {
+            var result = {};
+            //var test1 ="Фамилия: Петров";
+            //alert(test1.match(parser.lastName));
+            for( var key in parser){
+                result[key] = dataString.match(parser[key]);
+                //result[key] = 'hythgfhfh';
+                //alert(dataString.match(parser[key]));
+            }
+            alert('firstName ' + result.firstName);
+            alert('lastName ' + result.lastName);
+        }
+        function handlerClick(event) {
+            var target = event.target;
+            if(target.dataset.comand == undefined) {
+                return;
+            }
+            switch(target.dataset.comand) {
+            case "parse":
+                var textContain = document.querySelector("textarea");
+                var dataString = textContain.value;
+                if(dataString == "") {
+                    return;
+                }
+               //parserText(dataString, parser);
+               var parserForm = document.forms[0];
+                for(var key in parser){
+                    var itemParse = parser[key].exec(dataString);
+                    if(itemParse.length != 0){
+                        parserForm[key].value = itemParse[1];//dataString.match(parser[key][1]);
+                        //console.log(''+ key + ' => ' + parser[key].exec(dataString));
+                    }
+                }
+                break;
+            }
+        }
+        document.addEventListener("click",handlerClick);
+    </script>
+    </body>
+</head>

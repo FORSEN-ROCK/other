@@ -1,0 +1,220 @@
+<html>
+    <head>
+        <title>
+        </title>
+        <script src="parserWidget _new_add_button.js"></script>
+    <style>
+        select{ 
+            height: 21px;
+            width: 169px;
+            border: 3px double;
+            padding: 0px 2px 0px 2px;
+        }
+        select.longSelect{
+            width: 352px;
+        }
+        input{
+            width: 173px;
+        }
+        input[type="text"]{
+            border: 2px solid #000000;
+        }
+        input.longInput{
+            width: 352px;
+        }
+        textarea.originalText{
+            height: 300px;
+            width: 1069px;
+            border: 2px solid #000000;
+        }
+        td{
+            padding: 2px 2px 2px 2px;
+        }
+    </style>
+    </head>
+    
+    <body>
+        <div>
+            <form name="questionnaire">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for="firstName">Имя: </label>
+                                            </td>
+                                            <td>
+                                                <label for="lastName">Фамилия: </label>
+                                            </td>
+                                            <td>
+                                                <label for="middleName">Отчество: </label>
+                                            </td>
+                                            <td>
+                                                <label for="sex">Пол: </label>
+                                            </td>
+                                            <td>
+                                                <label for="mobelPhone">Моб.тел:</label>
+                                            </td>
+                                            <td>
+                                                <label for="email_1">e-mail:</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="text" maxlength="50" name="firstName" data-comand="fillField" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" maxlength="50" name="lastName" data-comand="fillField" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" maxlength="50" name="middleName" data-comand="fillField">
+                                            </td>
+                                            <td>
+                                                <select type="text" name="sex" data-comand="fillField" equired>
+                                                    <option>Выбрать</option>
+                                                    <option value="Мужской">Мужской</option>
+                                                    <option valye="Женский">Женский</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" maxlength="50" name="mobelPhone" data-comand="fillField" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" maxlength="50" name="email_1" data-comand="fillField" required>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="region">Регион:</label>
+                                            </td>
+                                            <td colspan="2">
+                                                <label for="education">Образование:</label>
+                                            </td>
+                                            <td colspan="3">
+                                                <label for="experience,availabilityExperience">Опыт работы:</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select type="text" maxlength="50" name="region" data-comand="fillField" required>
+                                                <option></option>
+                                                <option value="69">Академический</option>
+                                                </select>
+                                            </td>
+                                            <td colspan="2">
+                                                <select type="text" maxlength="100" name="education" class="longSelect" data-comand="fillField">
+                                                    <option></option>
+                                                    <option value="Неполное среднее">Неполное среднее</option>
+                                                    <option value="Среднее">Среднее</option>
+                                                    <option value="Средне-специальное">Средне-специальное</option>
+                                                    <option value="Неполное высшее">Неполное высшее</option>
+                                                    <option value="Высшее">Высшее</option>
+                                                    <option value="Два и более высших">Два и более высших</option>
+                                                    <option value="Cтудент очник">Cтудент очник</option>
+                                                    <option value="Cтудент заочник">Cтудент заочник</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select type="text" name="availabilityExperience" data-comand="experienceField">
+                                                    <option></option>
+                                                    <option value="false">Нет</option>
+                                                    <option value="true">Да</option>
+                                                <select>
+                                            </td>
+                                            <td colspan="2">
+                                                <select type="text" name="experience" class="longSelect" disabled>
+                                                    <option></option>
+                                                    <option value="">Правоохранительные органы</option>
+                                                    <option value="">Отдел взыскания банка</option>
+                                                    <option value="">Коллекторское агенство</option>
+                                                    <option value="">ФССП</option>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5">
+                                                <label for="originalTextField">Исходный текст анкеты с сайта:</label>
+                                            </td>
+                                            <td colspan="1">
+                                                <input type="button" data-comand="parse" value="Преобразовать">
+                                            </td>
+                                        </tr>
+                                        <tr rowspan="6">
+                                            <td colspan="6">
+                                                <textarea size="100000" class="originalText" name="originalTextField" data-comand="textField">
+                                                </textarea>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="button"  data-name="firstName" value="Имя" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="lastName" value="Фамилия" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="middleName" value="Отчество" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="sex" value="Пол" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="mobelPhone" value="Моб.тел" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="email_1" value="e-mail" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="region" value="Регион" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="education" value="Образование" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <!--tr>
+                                            <td>
+                                                <input type="button" data-name="education" value="Очистить" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="education" value="Отправить" data-comand="parseField">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="button" data-name="education" value="Преобразовать" data-comand="parseField">
+                                            </td>
+                                        </tr-->
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </body>
+</html>
