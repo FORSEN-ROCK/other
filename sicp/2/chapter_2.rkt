@@ -84,3 +84,46 @@
 ;(define d (maker-rat 1 (- 3)))
 ;(define e (mult-rat-opt a b))
 ;(define f (maker-rat 4 (- 16)))
+
+; 2.2
+(define (make-point x y)
+  (cons x y))
+
+(define (point-x point)
+  (car point))
+
+(define (point-y point)
+  (cdr point))
+
+(define (print-point point)
+  (display "(")
+  (display (point-x point))
+  (display " , ")
+  (display (point-y point))
+  (display ")")
+  (newline))
+
+(define (make-segment begin_p end_p)
+  (cons begin_p end_p))
+
+(define (start-segment segment)
+  (car segment))
+
+(define (end-segment segment)
+  (cdr segment))
+
+(define (mid-point-segment segment)
+  (make-point (/ (+ (point-x (start-segment segment))
+                    (point-x (end-segment segment))) 2)
+              (/ (+ (point-y (start-segment segment))
+                    (point-y (end-segment segment))) 2)))
+
+; test
+;(define point-a (make-point 2 4))
+;(define point-b (make-point 8 6))
+;(define segment-a (make-segment point-a point-b))
+;(define mid-point-ab (mid-point-segment segment-a))
+;(define point-c (make-point (- 2) (- 3)))
+;(define point-d (make-point 4 (- 1)))
+;(define segment-b (make-segment point-c point-d))
+;(define mid-point-cd (mid-point-segment segment-b))
