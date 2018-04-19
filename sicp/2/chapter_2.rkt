@@ -55,3 +55,32 @@
   (let ((num-gcd (gcd n d)))
         (make-rat (/ n num-gcd)
                   (/ d num-gcd))))
+
+; 2.1
+; Assuming: (- a) = (make-rat (- numer) (-denom))
+
+(define (sign-rat n d)
+  (if (or (< n 0)
+          (< d 0))
+      (- 1)
+      1))
+
+(define (maker-rat n d)
+  (let ((num-gcd (gcd n d))
+        (sign (sign-rat n d)))
+    (cons (* sign (/ n num-gcd))
+          (abs (/ d num-gcd)))))
+
+(define (mult-rat-opt num_1 num_2)
+    (maker-rat (* (numer num_1)
+                  (numer num_2))
+               (* (denom num_1)
+                  (denom num_2))))
+
+; test
+;(define a (maker-rat (- 3) (- 5)))
+;(define b (maker-rat 2 7))
+;(define c (maker-rat (- 3) 8))
+;(define d (maker-rat 1 (- 3)))
+;(define e (mult-rat-opt a b))
+;(define f (maker-rat 4 (- 16)))
