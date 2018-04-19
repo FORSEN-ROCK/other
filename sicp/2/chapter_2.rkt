@@ -86,6 +86,7 @@
 ;(define f (maker-rat 4 (- 16)))
 
 ; 2.2
+
 (define (make-point x y)
   (cons x y))
 
