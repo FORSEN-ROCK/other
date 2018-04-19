@@ -128,3 +128,71 @@
 ;(define point-d (make-point 4 (- 1)))
 ;(define segment-b (make-segment point-c point-d))
 ;(define mid-point-cd (mid-point-segment segment-b))
+
+; 2.3
+
+; a
+;(define (make-rectangle ver-a ver-b ver-d)
+;  (cons (make-segment ver-a ver-d)
+;        (make-segment ver-a ver-b)))
+
+;(define (len-segment segment)
+;  (let ((projection-x (- (point-x (end-segment segment))
+;                         (point-x (start-segment segment))))
+;        (projection-y (- (point-y (end-segment segment))
+;                         (point-y (start-segment segment)))))
+;    (sqrt (+ (* projection-x projection-x)
+;             (* projection-y projection-y)))))
+
+;(define (rec-height rectangel)
+;  (len-segment (car rectangel)))
+
+;(define (rec-width rectangel)
+;  (len-segment (cdr rectangel)))
+
+; b
+
+(define (make-rectangle ver-a ver-b ver-d)
+  (let ((height-x (- (point-x ver-d)
+                     (point-x ver-a)))
+        (height-y (- (point-y ver-d)
+                     (point-y ver-a)))
+        (width-x (- (point-x ver-b)
+                    (point-x ver-a)))
+        (width-y (- (point-y ver-b)
+                    (point-y ver-a))))
+  (cons (sqrt (+ (* height-x height-x)
+                 (* height-y height-y)))
+        (sqrt (+ (* width-x width-x)
+                 (* width-y width-y))))))
+
+(define (rec-height rectangel)
+  (car rectangel))
+
+(define (rec-width rectangel)
+  (cdr rectangel))
+
+(define (rec-area rectangel)
+  (let ((height (rec-height rectangel))
+         (width (rec-width rectangel)))
+    (* height width)))
+
+(define (rec-perimetr rectangel)
+  (let ((height (rec-height rectangel))
+        (width (rec-width rectangel)))
+    (+ (* 2 height)
+       (* 2 width))))
+
+;test
+(define A (make-point 0 10))
+(define B (make-point 10 10))
+(define D (make-point 0 2))
+(define rec-ABCD (make-rectangle A B D))
+(define P (rec-perimetr rec-ABCD))
+(define S (rec-area rec-ABCD))
+(define A1 (make-point (- 1) 6))
+(define B1 (make-point 5 5))
+(define D1 (make-point (- 2) (- 2)))
+(define rec-A1B1D1 (make-rectangle A1 B1 D1))
+(define P1 (rec-perimetr rec-A1B1D1))
+(define S1 (rec-area rec-A1B1D1))
