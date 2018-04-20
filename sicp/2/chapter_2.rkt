@@ -184,15 +184,34 @@
        (* 2 width))))
 
 ;test
-(define A (make-point 0 10))
-(define B (make-point 10 10))
-(define D (make-point 0 2))
-(define rec-ABCD (make-rectangle A B D))
-(define P (rec-perimetr rec-ABCD))
-(define S (rec-area rec-ABCD))
-(define A1 (make-point (- 1) 6))
-(define B1 (make-point 5 5))
-(define D1 (make-point (- 2) (- 2)))
-(define rec-A1B1D1 (make-rectangle A1 B1 D1))
-(define P1 (rec-perimetr rec-A1B1D1))
-(define S1 (rec-area rec-A1B1D1))
+;(define A (make-point 0 10))
+;(define B (make-point 10 10))
+;(define D (make-point 0 2))
+;(define rec-ABCD (make-rectangle A B D))
+;(define P (rec-perimetr rec-ABCD))
+;(define S (rec-area rec-ABCD))
+;(define A1 (make-point (- 1) 6))
+;(define B1 (make-point 5 5))
+;(define D1 (make-point (- 2) (- 2)))
+;(define rec-A1B1D1 (make-rectangle A1 B1 D1))
+;(define P1 (rec-perimetr rec-A1B1D1))
+;(define S1 (rec-area rec-A1B1D1))
+
+; 2.4
+
+(define (cons_ x y)
+(lambda (m) (m x y)))
+
+(define (car_ z)
+(z (lambda (p q) p)))
+
+(define (cdr_ z)
+  (z (lambda(p q) q)))
+
+; (car_ (cons_ 1 2))
+; (car (lambda (m) (m 1 2)))
+; ((lambda (m) (m 1 2)) (lambda (p q) p))
+; ((lambda ( p q) p) 1 2)
+; 1
+
+; 2.5
