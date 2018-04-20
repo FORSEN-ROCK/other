@@ -215,3 +215,35 @@
 ; 1
 
 ; 2.5
+
+(define (pow base n)
+  (define (square num)
+      (* num num))
+  (define (even? num)
+      (= (remainder num 2) 0))
+  (define (pow-iter base n prod)
+      (cond ((= n 0) prod)
+            ((even? n) (pow-iter (square base) (/ n 2) prod))
+            (else (pow-iter base (- n 1) (* prod base)))))
+  (pow-iter base n 1))
+        
+
+(define (cons_n a b)
+  (* (pow 2 a)
+     (pow 3 b)))
+
+(define (car_n num)
+  (define (car-iter z)
+    (if (= (remainder z 3) 0)
+        (car-iter (/ z 3))
+        z))
+  (/ (log (car-iter num))
+     (log 2)))
+
+(define (cdr_n num)
+  (define (cdr-iter z)
+    (if (= (remainder z 2) 0)
+        (cdr-iter (/ z 2))
+        z))
+  (/ (log (cdr-iter num))
+     (log 3)))
