@@ -248,8 +248,312 @@
   (/ (log (cdr-iter num))
      (log 3)))
 
-; 2.6
+; 2.6 Не решена
 
 (define zero (lambda (f) (lambda (x) x)))
+
 (define (add-1 n)
-(lambda (f) (lambda (x) (f ((n f) x)))))
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+; 2.7
+(define (add-interval int_1 int_2)
+  (make-interval (+ (lower-interval int_1)
+                    (lower-interval int_2))
+                 (+ (upper-interval int_1)
+                    (upper-interval int_2))))
+
+(define (mult-interval int_1 int_2)
+  (let ((p_1 (* (lower-interval int_1)
+                (lower-interval int_2)))
+        (p_2 (* (upper-interval int_1)
+                (upper-interval int_2)))
+        (p_3 (* (lower-interval int_1)
+                (upper-interval int_2)))
+        (p_4 (* (upper-interval int_1)
+                (upper-interval int_2))))
+    (make-interval (min p_1 p_2 p_3 p_4)
+                   (max p_1 p_2 p_3 p_4))))
+
+(define (div-interval int_1 int_2)
+  (mult-interval int_1
+                 (make-interval (/ 1.0 (upper-interval int_2))
+                                (/ 1.0 (lower-interval int_2)))))
+
+(define (lower-interval int)
+  (car int))
+
+(define (upper-interval int)
+  (cdr int))
+
+(define (make-interval min_int max_int)
+  (cons min_int max_int))
+
+; test
+(define r1 (make-interval 6.12 7.48))
+(define r2 (make-interval 4.47 4.94))
+(define ro1 (add-interval r1 r2))
+(define ro2 (mult-interval r1 r2))
+(define ro3 (div-interval r1 r2))
+
+; 2.8
+(define (sub-interval int_1 int_2)
+  (add-interval int_1
+                (make-interval (- (lower-interval int_2))
+                               (- (upper-interval int_2)))))
+; test
+(define sub-int (sub-interval (make-interval 2 3)
+                              (make-interval 4 5)))
+
+; 2.9 написать доказательство
+; 2.10
+(define (new-dev-interval int_1 int_2)
+  (if (and (< (lower-interval int_2) 0)
+           (> (upper-interval int_2) 0))
+      "Error denum is zero!"
+      (div-interval int_1 int_2)))
+
+; 2.11 астично решена
+(define (make-center-wigth center wigth)
+  (make-interval (- center wigth)
+                 (+ center wigth)))
+
+(define (center int)
+  (/ (+ (upper-interval int)
+        (lower-interval int)) 2))
+
+(define (wigth int)
+  (/ (- (upper-interval int)
+        (lower-interval int)) 2))
+
+; 2.12
+(define (make-center-percent center error)
+  (make-interval (* center (- 1 (/ error 100)))
+                 (* center (+ 1 (/ error 100)))))
+(define (percent int)
+  (* (/ (wigth int)
+        (center int)) 100))
+
+; 2.13
+; Погрешность произведения приблизительно равна
+; сумме погрешностей исходных интервалов
+; !! Написать вывод
+
+; 2.14
+(define (part_1 r1 r2)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval 
+                      (div-interval one r1)
+                      (div-interval one r2)))))
+
+(define (part_2 r1 r2)
+  (div-interval (mult-interval r1 r2)
+                (add-interval r1 r2)))
+; Утверждение, что алгебраически эквивалентные вырожения
+; Дают различные результаты верно. Это вызвано суммированием
+; погрешностей исходных итервалов при умножении, в следствии чего
+; увилечение числа вычислительных операций приводет к увиличению
+; погрешности. По этому алгебраически эквивалентные формы вычесления
+; дают различные результаты при разном количестве вычилительных операций
+
+; 2.15
+; Да, права. Так как погрешность "концентрируется" в неточных велечинах
+; многократные повторения и различные операции увеличивают погрешность
+; результата. Пусть A и B - некотрые переменные величены с соответствующими
+; погрешностями Ea и Eb. Тогда используя преблизительную формулу для опре-
+; деления погрешности результата можно записать погрешности для обоих вариантов
+; вычисления сопративления:
+; 1) Ea * Eb
+; 2) (Ea + Eb) / (Ea * Eb)
+; По представленным формулам хорошо видно, для первого случая погрешность
+; стремиться к 0  для всех интервалов с погрешностью меньше 100%.
+; В втором случаее погрешность стримиться к бесконечности
+
+; 2.16
+; Первая часть описана в ответах на другие вопросы данного раздела.
+; Для реализации пакета интервальной арифметики, не подверженного
+; проблеме расхождения результатов необходимо реализовать так чтобы
+; операции не влияли на погрешность результата. Возможно имеет смысл 
+; для расчета использовать значения центров интервалов и последующем 
+; вычислением результирующей погрешности
+
+(define (my-length-iter items)
+  (define (length-iter items count)
+    (if (null? items)
+        count
+        (length-iter (cdr items) (+ count 1))))
+  (length-iter items 0))
+
+(define (my-length-rec items)
+  (define (length-rec items)
+    (if (null? items)
+        0
+        (+ 1 (length (cdr items)))))
+  (length-rec items))
+
+(define (get-n items n)
+  (define (get-iter items count n)
+    (if (= count n)
+        (car items)
+        (get-iter (cdr items) (+ 1 count) n)))
+  (get-iter items 0 n))
+
+(define (append item_1 item_2)
+  (if (null? item_1)
+      item_2
+      (cons (car item_1)
+            (append (cdr item_1) item_2))))
+
+; 2.17
+(define (last-pair-1 items)
+  (list (get-n items (- (length items) 1))))
+
+(define (last-pair-2 items)
+  (define (iter items)
+    (if (null? (cdr items))
+        (list (car items))
+        (iter (cdr items))))
+  (iter items))
+
+; 2.18
+(define (reverse items)
+  (define (reverse-rec items count)
+    (if (= count 0)
+        (cons (car items) null)
+        (cons (get-n items count)
+              (reverse-rec items (- count 1)))))
+  (reverse-rec items (- (length items) 1)))
+
+; 2.19
+; 2.20
+(define (same-parity num . nums)
+  (define (even? num)
+    (= (remainder num 2) 0))
+  
+  (define (noeven? num)
+    (not (even? num)))
+  
+  (define (tensor-seq tensor nums)
+    (cond ((null? nums) null)
+          ((tensor (car nums))
+           (cons (car nums)
+              (tensor-seq tensor (cdr nums))))
+          (else (tensor-seq tensor (cdr nums)))))
+  
+ (if (even? num)
+     (tensor-seq even? nums)
+     (tensor-seq noeven? nums)))
+
+(define (map tensor sequence)
+  (define (ierator nums)
+    (if (null? nums) null
+        (cons (tensor (car nums))
+              (ierator (cdr nums)))))
+  (ierator sequence))
+
+; 2.21
+(define (square-list nums)
+  (if (null? nums) null
+      (cons (* (car nums) (car nums))
+            (square-list (cdr nums)))))
+
+(define (square-lst nums)
+  (map (lambda (x) (* x x)) nums))
+
+; 2.22
+; 1) Обратный порядок вызван тем что значение answer инициализировано 
+;    null для первого шага, из-за чего получается "раскрутка списка с
+;    конца"
+; 2) Программа не работает так как структура списка предполагает, следующию 
+;    сигнатуру: (list 1 2 3) == (cons 1 (cons 2 (cons 3 null))).
+;    в рассматриваемом примере получается (cons (cons (cons null 1) 4) 9)
+
+; 2.23
+(define (my-for-each tensr nums)
+  (if (null? nums) null
+      (tensr (car nums)))
+  (if (not (null? (cdr nums)))
+      (my-for-each tensr (cdr nums))))
+
+(define (count-leaves tree)
+  (cond ((null? tree) 0)
+        ((not (pair? tree)) 1)
+        (else (+ (count-leaves (car tree))
+                 (count-leaves (cdr tree))))))
+  
+; 2.25
+; (car (cdr (car (cdr (cdr x)))))
+; (car (car y))
+; (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr z))))))))))))
+
+; 2.26
+; ( 1 2 3 (4 5 6))      -- ( 1 2 3 4 5 6)
+; ((1 2 3) . (4 5 6))   -- ((1 2 3) 4 5 6)
+; ((1 2 3) (4 5 6))     ++
+
+; 2.27
+(define (deep-reverse sequence)
+  (define (iter nums result)
+          (cond ((null? nums) result)
+                ((not (pair? (car nums))) (iter (cdr nums)
+                                          (cons (car nums)
+                                                 result)))
+                (else (iter (cdr nums)
+                            (cons (iter (car nums) null)
+                                  result)))))
+  (iter sequence null))
+
+; 2.28
+;(define (fringe sequence)
+;  (define (iter nums result)
+;    (cond ((null? nums) result)
+;          ((not (pair? (car nums))) (iter (cdr nums)
+;                                          (cons (car nums)
+;                                                result)))
+;          (else (iter (cdr nums) (cons (car (car nums))
+;                                       result)))))
+;  (iter sequence null))
+
+(define (fringe items)
+  (define (rec nums)
+    (cond ((null? nums) null)
+          ((not (pair? (car nums)))
+           (cons (car nums)
+                 (rec (cdr nums))))
+          (else (append (cons (car (car nums))
+                            (rec (cdr (car nums))))
+                      (rec (cdr nums))))))
+  (rec items))
+
+; 2.29 Не делал
+
+; Нужно подправить append что бы можно было обрабатывать листья
+(define (map-tree tensor tree)
+  (define (rec tree)
+    (cond ((null? tree) null)
+          ((pair? (car tree)) (append (list (map tensor (car tree)))
+                                     (rec (cdr tree))))))
+  (rec tree))
+
+; 2.30
+(define (square-tree-m tree)
+  (map-tree (lambda (x) (* x x)) tree))
+
+(define (square-tree tree)
+  (define (square x)
+    (* x x))
+  (define (rec tree)
+    (cond ((null? tree) null)
+          ((not (pair? tree)) (square tree))
+          (else (cons (rec (car tree))
+                      (rec (cdr tree))))))
+  (rec tree))
+
+; 2.31 решена в рамках самостоятельного творчества
+; 2.32
+(define (subset s)
+  (define (logic x) s)
+  (if (null? s) (list null)
+      (let ((rest (subset (cdr s))))
+           (append rest
+                   (map logic rest)))))

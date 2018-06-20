@@ -167,3 +167,6 @@
 (define (smoothed-repeated func num)
   (lambda (x)
           (((repeated smoothed num) func) x)))
+
+; 1.45
+
