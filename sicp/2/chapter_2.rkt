@@ -550,10 +550,68 @@
   (rec tree))
 
 ; 2.31 решена в рамках самостоятельного творчества
-; 2.32
+; 2.32 Не решена
 (define (subset s)
   (define (logic x) s)
   (if (null? s) (list null)
       (let ((rest (subset (cdr s))))
            (append rest
                    (map logic rest)))))
+
+; Раздел 2.2.3
+(define (filter-my predicat sequence)
+  (cond ((null? sequence) null)
+        ((not (pair? sequence))
+              (if (predicat sequence)
+                  sequence))
+        (else (if (predicat (car sequence))
+                  (cons (filter predicat (car sequence))
+                        (filter predicat (cdr sequence)))
+                  (filter predicat (cdr sequence))))))
+
+(define (filter predicat sequence)
+  (cond ((null? sequence) null)
+        ((predicat (car sequence))
+         (cons (car sequence)
+               (filter predicat (cdr sequence))))
+        (else (filter predicat (cdr sequence)))))
+             
+(define (accumulate-my operation inicial sequence)
+  (if (null? sequence)
+      inicial
+      (accumulate operation (operation (car sequence) inicial)
+                  (cdr sequence))))
+
+(define (accumulate operation inicial sequence)
+  (if (null? sequence) inicial
+      (operation (car sequence)
+          (accumulate operation inicial (cdr sequence)))))
+
+(define (enum-interval low higth)
+  (if (> low higth) null
+      (cons low (enum-interval (+ low 1) higth))))
+
+(define (enum-tree tree)
+  (cond ((null? tree) null)
+        ((pair? (car tree)) (add (car tree)
+                                 (cdr tree)))
+        (else (cons (car tree)
+                    (enum-tree (cdr tree))))))
+      
+(define (add sequence  sequence_2)
+  (if (null? sequence) sequence_2
+      (cons (car sequence)
+            (add (cdr sequence) sequence_2))))
+
+(define (square x)
+  (* x x))
+
+(define (odd? x)
+  (not (= (remainder x 2) 0)))
+
+(define (sum-odd-tree tree)
+  (accumulate + 0
+              (map square
+                   (filter odd?
+                           (enum-tree tree)))))
+                           
