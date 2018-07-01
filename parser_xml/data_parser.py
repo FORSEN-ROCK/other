@@ -1,7 +1,9 @@
 import os
+import sys
 import codecs
 import re
 import xml.etree.ElementTree as etree
+import argparse
 
 
 PATH_EVENTS_SOURCE = r'D:\git-project\parser_xml\events'
@@ -869,13 +871,83 @@ def add_heder_xml(file_source):
     file_out.close()
     return True
 
+def get_files_path():
+    PATH_EVENTS_SOURCE = os.getenv('PATH_EVENTS_SOURCE')
+    PATH_CNDIDATES_SOURCE = os.getenv('PATH_CNDIDATES_SOURCE')
+    PATH_SAVE_EVENTS = os.getenv('PATH_SAVE_EVENTS')
+    PATH_SAVE_CANDIDATES = os.getenv('PATH_SAVE_CANDIDATES')
+    PATH_VACANCY_SOURCE = os.getenv('PATH_VACANCY_SOURCE')
+    PATH_VACANCY_SAVE = os.getenv('PATH_VACANCY_SAVE')
+    PATH_DIVISION_SOURCE = os.getenv('PATH_DIVISION_SOURCE')
+    PATH_DIVIVISION_SAVE = os.getenv('PATH_DIVIVISION_SAVE')
+    print(PATH_EVENTS_SOURCE)
+
 if __name__ == '__main__':
-    ##vacancy_scan()
-    #print('Event Start')
-    ##event_scan()
-    #print('Event End')
-    #print('Candidate Start')
-    ##correction_files()
-    candidate_scan()
-    #print('Candidate End')
-    ##division_scan()
+    sys_args_parse = argparse.ArgumentParser(
+        description=('This utility parsing xml-files from '+
+                     'e-staff and convert to csv-files')
+    )
+    sys_args_parse.add_argument(
+        '-usp', '--using_system_preference',
+        help='Utility using path define in system preference',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-all', '--all',
+        help ='Utility parsing all categorie source files',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-can', '--candidates',
+        help='Utility only parsing canditate files',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-e', '--event',
+        help='Utility only parsing event files',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-v', '--vacancy',
+        help='Utility only parsing vacancy files',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-d', '--division',
+        help='Utility only parsing division files',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
+        '-cor', '--correct',
+        help='Utility only correct source files',
+        default=False,
+        action='store_true'
+    )
+    cmd_arg = sys_args_parse.parse_args(sys.argv[1:])
+
+    if cmd_arg.using_system_preference:
+        get_files_path()
+
+    if cmd_arg.all:
+        vacancy_scan()
+        event_scan()
+        candidate_scan()
+        ##correction_files()
+        ##division_scan()
+
+    if cmd_arg.candidates and not cmd_arg.all:
+        candidate_scan()
+    if cmd_arg.event and not cmd_arg.all:
+        event_scan()
+    if cmd_arg.vacancy and not cmd_arg.all:
+        vacancy_scan()
+    if cmd_arg.division:
+        division_scan()
+    if cmd_arg.correct:
+        correction_files()
