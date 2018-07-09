@@ -1,9 +1,11 @@
-import os
+﻿import os
 import sys
 import codecs
+import datetime
 import re
 import xml.etree.ElementTree as etree
 import argparse
+import threading
 
 
 PATH_EVENTS_SOURCE = r'D:\git-project\parser_xml\events'
@@ -21,6 +23,8 @@ PATH_VACANCY_SAVE = r'D:\git-project\parser_xml\flet_vacancy'
 PATH_DIVISION_SOURCE = r'D:\git-project\parser_xml\division'
 
 PATH_DIVIVISION_SAVE = r'D:\git-project\parser_xml\flet_division'
+
+PATH_VACANCY_CAND_SAVE = r'D:\git-project\parser_xml\flet_candidate_vacanct'
 
 
 class BaseException(Exception):
@@ -119,9 +123,17 @@ class EventParse(BaseParserXML):
 
     def get_comment(self, xml_content):
         data_raw = self._get_target('comment', xml_content)
-        data = data_raw.replace('\r\n', ' ')
-        data = data.replace(';', ',')
-        return data
+        data = data_raw.replace('\r\n', '')
+        data = data.replace('\r', '')
+        data = data.replace('\n', '')
+        data = data.replace('\t', ' ')
+        data = re.findall(
+                    '[^#\d+][A-Za-zА-ЯЁа-яё\.\d\-\_\:\s]+',
+                    data
+        )
+        data_string = str(' ').join(data)
+        data_string = data_string.replace(';', ',')
+        return data_string
 
     def get_creation_date(self, xml_content):
         return self._get_target('creation_date', xml_content)
@@ -280,9 +292,17 @@ class VacancyParser(BaseParserXML):
 
     def get_comment(self, xml_content):
         raw = self._get_target('comment', xml_content)
-        data = raw.replace(';', ',')
-        data = data.replace('\r\n', ' ')
-        return data
+        data = raw.replace('\r\n', '')
+        data = data.replace('\r', '')
+        data = data.replace('\n', '')
+        data = data.replace('\t', ' ')
+        data = re.findall(
+                    '[^#\d+][A-Za-zА-ЯЁа-яё\.\d\-\_\:\s]+',
+                    data
+        )
+        data_string = str(' ').join(data)
+        data_string = data_string.replace(';', ',')
+        return data_string
 
     def get_mass_vacancy(self, xml_content):
         raw = self._get_target('mass_vacancy', xml_content)
@@ -425,7 +445,10 @@ def event_parser(cls, xml_content):
     return event
 
 def event_save(event_list):
-    file = codecs.open(PATH_SAVE_EVENTS + '\\' + 'event_result.csv', 
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'event_result_%s.csv' %(date_performance)
+    file = codecs.open(PATH_SAVE_EVENTS + '\\' + name, 
                        mode='bw', encoding='Windows-1251')
     file.write("id;type;date;vacancy_id;candidate_id;creation_date;" +
                "contact_phones_desc;comment\n")
@@ -440,6 +463,8 @@ def event_save(event_list):
                                             event['contact_phones_desc'],
                                             event['comment']
         )
+#        if len(event['comment']) > 300:
+#            print(data_str)
         #data = data_str.encode('Windows-1251')
         file.write(data_str)
     file.close()
@@ -738,7 +763,7 @@ def vacancy_candidates_parser(cls, xml_content):
     return vacabcy_candidates_list
 
 def vacancy_candidates_save(vacancy_candidates_list):
-    file = codecs.open(PATH_VACANCY_SAVE + '\\' + 
+    file = codecs.open(PATH_VACANCY_CAND_SAVE + '\\' + 
                        'vacancy_candidates_result.csv', 
                        mode='bw', encoding='Windows-1251')
     file.write("vacancy;candidate\n")
@@ -880,7 +905,7 @@ def get_files_path():
     PATH_VACANCY_SAVE = os.getenv('PATH_VACANCY_SAVE')
     PATH_DIVISION_SOURCE = os.getenv('PATH_DIVISION_SOURCE')
     PATH_DIVIVISION_SAVE = os.getenv('PATH_DIVIVISION_SAVE')
-    print(PATH_EVENTS_SOURCE)
+    PATH_VACANCY_CAND_SAVE = os.getenv('PATH_VACANCY_CAND_SAVE')
 
 if __name__ == '__main__':
     sys_args_parse = argparse.ArgumentParser(
@@ -935,11 +960,22 @@ if __name__ == '__main__':
         get_files_path()
 
     if cmd_arg.all:
-        vacancy_scan()
-        event_scan()
-        candidate_scan()
+        thread_1 = threading.Thread(target=vacancy_scan)
+        thread_2 = threading.Thread(target=event_scan)
+        thread_3 = threading.Thread(target=candidate_scan)
+        ##thread_4 = threading.Thread(target=division_scan)
+
+        thread_1.daemon = True
+        thread_2.daemon = True
+        thread_3.daemon = True
+        ##thread_4.daemon = True
+
+        thread_1.start()
+        thread_2.start()
+        thread_3.start()
+        ##thread_4.start()
+
         ##correction_files()
-        ##division_scan()
 
     if cmd_arg.candidates and not cmd_arg.all:
         candidate_scan()
