@@ -563,8 +563,10 @@ def candidate_parser(cls, xml_content):
     return candidate
 
 def candidate_save(candidate_list):
-    file = codecs.open(PATH_SAVE_CANDIDATES + '\\' +
-                       'candidate_result.csv',
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'candidate_result_%s' %(date_performance)
+    file = codecs.open(PATH_SAVE_CANDIDATES + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     format_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;"
     format_str += "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n"
@@ -697,7 +699,10 @@ def vacancy_parser(cls, xml_content):
     return history
 
 def vacancy_save(vacancy_list):
-    file = codecs.open(PATH_VACANCY_SAVE + '\\' + 'vacancy_result.csv',
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'vacancy_result_%s.csv' %(date_performance)
+    file = codecs.open(PATH_VACANCY_SAVE + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     file.write("id;name;code;division;created;final_candidate;" +
                "source;city;position_name;status;date;type;" +
@@ -763,8 +768,10 @@ def vacancy_candidates_parser(cls, xml_content):
     return vacabcy_candidates_list
 
 def vacancy_candidates_save(vacancy_candidates_list):
-    file = codecs.open(PATH_VACANCY_CAND_SAVE + '\\' + 
-                       'vacancy_candidates_result.csv', 
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'vacancy_candidates_result_%s.csv' %(date_performance)
+    file = codecs.open(PATH_VACANCY_CAND_SAVE + '\\' + name, 
                        mode='bw', encoding='Windows-1251')
     file.write("vacancy;candidate\n")
     for vacancy in vacancy_candidates_list:
@@ -812,8 +819,10 @@ def division_parser(cls, xml_content):
     return division
 
 def division_save(division_list):
-    file = codecs.open(PATH_DIVIVISION_SAVE + '\\' + 
-                       'division_result.csv',
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'division_result_%s.csv' %(date_performance)
+    file = codecs.open(PATH_DIVIVISION_SAVE + '\\' + name,
                         mode='bw', 
                         encoding='Windows-1251')
     file.write("id;parent_id;created;last_update;code;name;type;" +
