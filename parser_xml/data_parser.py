@@ -7,24 +7,57 @@ import xml.etree.ElementTree as etree
 import argparse
 import threading
 
-
 PATH_EVENTS_SOURCE = r'D:\git-project\parser_xml\events'
-
 PATH_CNDIDATES_SOURCE = r'D:\git-project\parser_xml\candidates'
-
 PATH_SAVE_EVENTS = r'D:\git-project\parser_xml\flet_events'
-
 PATH_SAVE_CANDIDATES = r'D:\git-project\parser_xml\flet_candidates'
-
 PATH_VACANCY_SOURCE = r'D:\git-project\parser_xml\vacancy'
-
 PATH_VACANCY_SAVE = r'D:\git-project\parser_xml\flet_vacancy'
-
 PATH_DIVISION_SOURCE = r'D:\git-project\parser_xml\division'
-
 PATH_DIVIVISION_SAVE = r'D:\git-project\parser_xml\flet_division'
-
 PATH_VACANCY_CAND_SAVE = r'D:\git-project\parser_xml\flet_candidate_vacanct'
+PATH_SAVE_CANDIDATES_ERROR_LOG = r'D:\git-project\parser_xml\candidates_error_log'
+
+
+def set_files_path():
+    global PATH_EVENTS_SOURCE
+    global PATH_CNDIDATES_SOURCE
+    global PATH_SAVE_EVENTS
+    global PATH_SAVE_CANDIDATES
+    global PATH_VACANCY_SOURCE
+    global PATH_VACANCY_SAVE
+    global PATH_DIVISION_SOURCE
+    global PATH_DIVIVISION_SAVE
+    global PATH_VACANCY_CAND_SAVE
+    global PATH_SAVE_CANDIDATES_ERROR_LOG
+
+    PATH_EVENTS_SOURCE = os.getenv('PATH_EVENTS_SOURCE')
+    PATH_CNDIDATES_SOURCE = os.getenv('PATH_CNDIDATES_SOURCE')
+    PATH_SAVE_EVENTS = os.getenv('PATH_SAVE_EVENTS')
+    PATH_SAVE_CANDIDATES = os.getenv('PATH_SAVE_CANDIDATES')
+    PATH_VACANCY_SOURCE = os.getenv('PATH_VACANCY_SOURCE')
+    PATH_VACANCY_SAVE = os.getenv('PATH_VACANCY_SAVE')
+    PATH_DIVISION_SOURCE = os.getenv('PATH_DIVISION_SOURCE')
+    PATH_DIVIVISION_SAVE = os.getenv('PATH_DIVIVISION_SAVE')
+    PATH_VACANCY_CAND_SAVE = os.getenv('PATH_VACANCY_CAND_SAVE')
+    PATH_SAVE_CANDIDATES_ERROR_LOG = os.getenv(
+                                'PATH_SAVE_CANDIDATES_ERROR_LOG'
+    )
+
+
+def get_files_path():
+    print("PATH_EVENTS_SOURCE = %s" % (PATH_EVENTS_SOURCE))
+    print("PATH_CNDIDATES_SOURCE = %s" % (PATH_CNDIDATES_SOURCE))
+    print("PATH_SAVE_EVENTS = %s" % (PATH_SAVE_EVENTS))
+    print("PATH_SAVE_CANDIDATES = %s" % (PATH_SAVE_CANDIDATES))
+    print("PATH_VACANCY_SOURCE = %s" % (PATH_VACANCY_SOURCE))
+    print("PATH_VACANCY_SAVE = %s" % (PATH_VACANCY_SAVE))
+    print("PATH_DIVISION_SOURCE = %s" % (PATH_DIVISION_SOURCE))
+    print("PATH_DIVIVISION_SAVE = %s" % (PATH_DIVIVISION_SAVE))
+    print("PATH_VACANCY_CAND_SAVE = %s" % (PATH_VACANCY_CAND_SAVE))
+    print("PATH_SAVE_CANDIDATES_ERROR_LOG =%s" %(
+                                    PATH_SAVE_CANDIDATES_ERROR_LOG
+    ))
 
 
 class BaseException(Exception):
@@ -38,7 +71,7 @@ class ParserError(BaseException):
 
 class BaseParserXML(object):
 
-    def _get_target(self, target_name, xml_content, 
+    def _get_target(self, target_name, xml_content,
                     return_xml_element=False):
         """Find target value or element in xml tree
         Takes xml tree and target_name
@@ -97,14 +130,15 @@ class BaseParserXML(object):
 class EventParse(BaseParserXML):
     target_id = 'id'
     target_type_id = 'type_id'
-    #target_is_derived = 'is_derived'
+    # target_is_derived = 'is_derived'
     target_date = 'date'
     target_vacancy_id = 'vacancy_id'
     target_candidate_id = 'candidate_id'
     target_comment = 'comment'
     target_creation_date = 'creation_date'
     target_contact_phones_desc = 'contact_phones_desc'
-    #target_is_rr_poll = 'is_rr_poll'
+
+    # target_is_rr_poll = 'is_rr_poll'
 
     def get_id(self, xml_content):
         return self._get_target('id', xml_content)
@@ -128,8 +162,8 @@ class EventParse(BaseParserXML):
         data = data.replace('\n', '')
         data = data.replace('\t', ' ')
         data = re.findall(
-                    '[^#\d+][A-Za-zА-ЯЁа-яё\.\d\-\_\:\s]+',
-                    data
+            '[^#\d+][A-Za-zА-ЯЁа-яё.\d\-\_\:\s]+',
+            data
         )
         data_string = str(' ').join(data)
         data_string = data_string.replace(';', ',')
@@ -297,8 +331,8 @@ class VacancyParser(BaseParserXML):
         data = data.replace('\n', '')
         data = data.replace('\t', ' ')
         data = re.findall(
-                    '[^#\d+][A-Za-zА-ЯЁа-яё\.\d\-\_\:\s]+',
-                    data
+            '[^#\d+][A-Za-zА-ЯЁа-яё\.\d\-\_\:\s]+',
+            data
         )
         data_string = str(' ').join(data)
         data_string = data_string.replace(';', ',')
@@ -345,7 +379,6 @@ class VacancyParser(BaseParserXML):
             status_dict.setdefault('status', status)
 
             status_list.append(status_dict)
-
 
         return status_list
 
@@ -401,13 +434,17 @@ class DivisionParser(BaseParserXML):
 
 
 def save_error(error_list):
-    file = codecs.open(PATH_SAVE_CANDIDATES + '\\' +
-                       'error_log.csv',
+    date = datetime.datetime.utcnow()
+    date_performance = date.strftime('%d_%m_%G')
+    name = 'error_log_%s.csv' %(date_performance)
+    file = codecs.open(PATH_SAVE_CANDIDATES_ERROR_LOG + '\\' +
+                       name,
                        mode='bw', encoding='Windows-1251')
     for error in error_list:
-        data_str = '%s\n' %(error)
+        data_str = '%s\n' % (error)
         file.write(data_str)
     file.close()
+
 
 def event_parser(cls, xml_content):
     if not cls:
@@ -421,7 +458,7 @@ def event_parser(cls, xml_content):
     event_id = cls.get_id(xml_content)
     event.setdefault('id', event_id)
 
-    type_id =cls.get_type_id(xml_content)
+    type_id = cls.get_type_id(xml_content)
     event.setdefault('type_id', type_id)
 
     date = cls.get_date(xml_content)
@@ -444,30 +481,29 @@ def event_parser(cls, xml_content):
 
     return event
 
+
 def event_save(event_list):
     date = datetime.datetime.utcnow()
     date_performance = date.strftime('%d_%m_%G')
-    name = 'event_result_%s.csv' %(date_performance)
-    file = codecs.open(PATH_SAVE_EVENTS + '\\' + name, 
+    name = 'event_result_%s.csv' % (date_performance)
+    file = codecs.open(PATH_SAVE_EVENTS + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     file.write("id;type;date;vacancy_id;candidate_id;creation_date;" +
                "contact_phones_desc;comment\n")
     for event in event_list:
-        data_str = "%s;%s;%s;%s;%s;%s;%s;%s\n" %(
-                                            event['id'],
-                                            event['type_id'],
-                                            event['date'],
-                                            event['vacancy_id'],
-                                            event['candidate_id'],
-                                            event['creation_date'],
-                                            event['contact_phones_desc'],
-                                            event['comment']
+        data_str = "%s;%s;%s;%s;%s;%s;%s;%s\n" % (
+            event['id'],
+            event['type_id'],
+            event['date'],
+            event['vacancy_id'],
+            event['candidate_id'],
+            event['creation_date'],
+            event['contact_phones_desc'],
+            event['comment']
         )
-#        if len(event['comment']) > 300:
-#            print(data_str)
-        #data = data_str.encode('Windows-1251')
         file.write(data_str)
     file.close()
+
 
 def event_scan():
     event_xml_parser = EventParse()
@@ -481,6 +517,7 @@ def event_scan():
             event_list.append(event)
 
     event_save(event_list)
+
 
 def candidate_parser(cls, xml_content):
     if not cls:
@@ -562,10 +599,11 @@ def candidate_parser(cls, xml_content):
 
     return candidate
 
+
 def candidate_save(candidate_list):
     date = datetime.datetime.utcnow()
     date_performance = date.strftime('%d_%m_%G')
-    name = 'candidate_result_%s' %(date_performance)
+    name = 'candidate_result_%s.csv' % (date_performance)
     file = codecs.open(PATH_SAVE_CANDIDATES + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     format_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;"
@@ -576,34 +614,34 @@ def candidate_save(candidate_list):
                "source;city;salary;uni_salary;vacancy_id;" +
                "main_vacancy_id;main_vacancy_division_id\n")
     for candidate in candidate_list:
-        data_str = format_str %(
-                                candidate['id'],
-                                candidate['code'],
-                                candidate['first_name'],
-                                candidate['last_name'],
-                                candidate['middle_name'],
-                                candidate['gender'],
-                                candidate['is_candidate'],
-                                candidate['birth'],
-                                candidate['age'],
-                                candidate['homme_phone'],
-                                candidate['phone'],
-                                candidate['email'],
-                                candidate['email_2'],
-                                candidate['creation_date'],
-                                candidate['last_mod_date'],
-                                candidate['entrance'],
-                                candidate['source'],
-                                candidate['city'],
-                                candidate['salary'],
-                                candidate['uni_salary'],
-                                candidate['vacancy_id'],
-                                candidate['main_vacancy_id'],
-                                candidate['main_vac_div']
+        data_str = format_str % (
+            candidate['id'],
+            candidate['code'],
+            candidate['first_name'],
+            candidate['last_name'],
+            candidate['middle_name'],
+            candidate['gender'],
+            candidate['is_candidate'],
+            candidate['birth'],
+            candidate['age'],
+            candidate['homme_phone'],
+            candidate['phone'],
+            candidate['email'],
+            candidate['email_2'],
+            candidate['creation_date'],
+            candidate['last_mod_date'],
+            candidate['entrance'],
+            candidate['source'],
+            candidate['city'],
+            candidate['salary'],
+            candidate['uni_salary'],
+            candidate['vacancy_id'],
+            candidate['main_vacancy_id'],
+            candidate['main_vac_div']
         )
-        #data = data_str.encode('Windows-1251')
         file.write(data_str)
     file.close()
+
 
 def clear_attachments(file_source):
     file_in = codecs.open(file_source, mode='br')
@@ -627,17 +665,39 @@ def clear_attachments(file_source):
 
     return execution
 
-def candidate_scan():
+def clear(file_source):
+    file_in = codecs.open(file_source, mode='br')
+    data = file_in.read()
+    file_in.close()
+    pattern_1 = b'<attachments>'
+    pattern_2 = b'</attachments>'
+    first_in = data.find(pattern_1)
+    last_in = data.find(pattern_2) + len(pattern_2)
+    data_1 = data[:first_in]
+    data_2 = data[last_in:]
+
+    if data_1 and data_2:
+        data = b''.join([data_1, data_2])
+        file_out = codecs.open(file_source, mode='bw')
+        file_out.write(data)
+        file_out.close()
+        execution = True
+    else:
+        execution = False
+
+    return execution
+
+def candidate_scan(stream=0):
     candidate_xml_parser = CandidateParser()
     candidate_list = []
     error_list = []
     for path_dir, dirs, files in os.walk(PATH_CNDIDATES_SOURCE):
         for file in files:
-            file_source = path_dir + '\\' + file
+            file_source = PATH_CNDIDATES_SOURCE + '\\' + file
             try:
                 tree = etree.parse(file_source)
             except etree.ParseError:
-                execution = clear_attachments(file_source)
+                execution = clear(file_source)
 
                 if execution:
                     tree = etree.parse(file_source)
@@ -649,7 +709,9 @@ def candidate_scan():
             candidate_list.append(candidate)
 
     candidate_save(candidate_list)
-    save_error(error_list)
+
+    if len(error_list) >= 1:
+        save_error(error_list)
 
 def vacancy_parser(cls, xml_content):
     if not cls:
@@ -674,7 +736,7 @@ def vacancy_parser(cls, xml_content):
     history = cls.get_history(xml_content)
 
     if len(history) < 1:
-        #print("Allert! vacancy_id = %s" %(id))
+        # print("Allert! vacancy_id = %s" %(id))
         status = cls.get_status(xml_content)
         create_history = {}
         create_history.setdefault('date', created)
@@ -698,36 +760,38 @@ def vacancy_parser(cls, xml_content):
 
     return history
 
+
 def vacancy_save(vacancy_list):
     date = datetime.datetime.utcnow()
     date_performance = date.strftime('%d_%m_%G')
-    name = 'vacancy_result_%s.csv' %(date_performance)
+    name = 'vacancy_result_%s.csv' % (date_performance)
     file = codecs.open(PATH_VACANCY_SAVE + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     file.write("id;name;code;division;created;final_candidate;" +
                "source;city;position_name;status;date;type;" +
                "comment;mass_vacancy;mp_vacancy\n")
     for vacancy in vacancy_list:
-        data_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n" %(
-                                        vacancy['id'],
-                                        vacancy['name'],
-                                        vacancy['code'],
-                                        vacancy['division'],
-                                        vacancy['created'],
-                                        vacancy['final_candidate'],
-                                        vacancy['source'],
-                                        vacancy['city'],
-                                        vacancy['position_name'],
-                                        vacancy['status'],
-                                        vacancy['date'],
-                                        vacancy['type'],
-                                        vacancy['comment'],
-                                        vacancy['mass_vacancy'],
-                                        vacancy['mp_vacancy']
+        data_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n" % (
+            vacancy['id'],
+            vacancy['name'],
+            vacancy['code'],
+            vacancy['division'],
+            vacancy['created'],
+            vacancy['final_candidate'],
+            vacancy['source'],
+            vacancy['city'],
+            vacancy['position_name'],
+            vacancy['status'],
+            vacancy['date'],
+            vacancy['type'],
+            vacancy['comment'],
+            vacancy['mass_vacancy'],
+            vacancy['mp_vacancy']
         )
-        #data = data_str.encode('Windows-1251')
+        # data = data_str.encode('Windows-1251')
         file.write(data_str)
     file.close()
+
 
 def vacancy_scan():
     vacancy_xml_parser = VacancyParser()
@@ -741,14 +805,15 @@ def vacancy_scan():
             root = tree.getroot()
             vacancy = vacancy_parser(vacancy_xml_parser, root)
             vacancy_candidates = vacancy_candidates_parser(
-                                        vacancy_candidate_xmal_parser,
-                                        root
+                vacancy_candidate_xmal_parser,
+                root
             )
             vacancy_list += vacancy
             vacancy_candidates_list += vacancy_candidates
 
     vacancy_save(vacancy_list)
     vacancy_candidates_save(vacancy_candidates_list)
+
 
 def vacancy_candidates_parser(cls, xml_content):
     if not cls:
@@ -767,18 +832,20 @@ def vacancy_candidates_parser(cls, xml_content):
         vacabcy_candidates_list.append(vacancy_candidates)
     return vacabcy_candidates_list
 
+
 def vacancy_candidates_save(vacancy_candidates_list):
     date = datetime.datetime.utcnow()
     date_performance = date.strftime('%d_%m_%G')
-    name = 'vacancy_candidates_result_%s.csv' %(date_performance)
-    file = codecs.open(PATH_VACANCY_CAND_SAVE + '\\' + name, 
+    name = 'vacancy_candidates_result_%s.csv' % (date_performance)
+    file = codecs.open(PATH_VACANCY_CAND_SAVE + '\\' + name,
                        mode='bw', encoding='Windows-1251')
     file.write("vacancy;candidate\n")
     for vacancy in vacancy_candidates_list:
-        data_str = "%s;%s\n" %(vacancy['vacancy'], vacancy['candidate'])
-        #data = data_str.encode('Windows-1251')
+        data_str = "%s;%s\n" % (vacancy['vacancy'], vacancy['candidate'])
+        # data = data_str.encode('Windows-1251')
         file.write(data_str)
     file.close()
+
 
 def division_parser(cls, xml_content):
     if not cls:
@@ -818,29 +885,31 @@ def division_parser(cls, xml_content):
 
     return division
 
+
 def division_save(division_list):
     date = datetime.datetime.utcnow()
     date_performance = date.strftime('%d_%m_%G')
-    name = 'division_result_%s.csv' %(date_performance)
+    name = 'division_result_%s.csv' % (date_performance)
     file = codecs.open(PATH_DIVIVISION_SAVE + '\\' + name,
-                        mode='bw', 
-                        encoding='Windows-1251')
+                       mode='bw',
+                       encoding='Windows-1251')
     file.write("id;parent_id;created;last_update;code;name;type;" +
                "hce;eid\n")
     for division in division_list:
-        data_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s\n" %(
-                                            division['id'],
-                                            division['parent_id'],
-                                            division['created'],
-                                            division['last_update'],
-                                            division['code'],
-                                            division['name'],
-                                            division['type'],
-                                            division['hce'],
-                                            division['eid']
+        data_str = "%s;%s;%s;%s;%s;%s;%s;%s;%s\n" % (
+            division['id'],
+            division['parent_id'],
+            division['created'],
+            division['last_update'],
+            division['code'],
+            division['name'],
+            division['type'],
+            division['hce'],
+            division['eid']
         )
         file.write(data_str)
     file.close()
+
 
 def division_scan():
     division_xml_parser = DivisionParser()
@@ -858,6 +927,7 @@ def division_scan():
 
     division_save(division_list)
 
+
 def correction_files():
     error_log = codecs.open(PATH_SAVE_CANDIDATES + '\\' +
                             'error_log.csv',
@@ -865,60 +935,35 @@ def correction_files():
     data_error_log = error_log.read()
     errors = data_error_log.split('\n')
     for error_file in errors:
-        #execution = clear(PATH_CNDIDATES_SOURCE + '\\' +
+        # execution = clear(PATH_CNDIDATES_SOURCE + '\\' +
         #                  error_file)
-        execution = add_heder_xml(PATH_CNDIDATES_SOURCE + '\\' +
+        execution = add_heder_xml(PATH_SAVE_CANDIDATES_ERROR_LOG + '\\' +
                                   error_file)
         print(error_file, '-', execution)
 
-def clear(file_source):
-    file_in = codecs.open(file_source, mode='br')
-    data = file_in.read()
-    file_in.close()
-    reg_exp_1 = (#b' +
-            b'<candidate SPXML-FORM="x-app://rcr/rcr_candidate.xmd">' +
-            b'.+<attachments>'
-    )
-    reg_exp_2 = b'</attachments>.+</candidate>'
-    data_1 = re.findall(reg_exp_1, data)
-    data_2 = re.findall(reg_exp_2, data)
-    
-    if data_1 and data_2:
-        data_list = data_1 + data_2
-        data = b''.join(data_list)
-        file_out = codecs.open(file_source, mode='bw')
-        file_out.write(data)
-        file_out.close()
-        execution = True
-    else:
-        execution = False
-
-    return execution
 
 def add_heder_xml(file_source):
-    file_in = open(file_source, 'br')
-    data_in = file_in.read()
-    file_in.close()
-    header_str = b'<?xml version="1.0" encoding="windows-1251"?>\n'
-    file_out = open(file_source, 'bw')
-    file_out.write(header_str + data_in)
-    file_out.close()
+    file_open = True
+    try:
+        file_in = open(file_source, 'br')
+    except FileNotFoundError:
+        file_open = False
+
+    if file_open:
+        data_in = file_in.read()
+        file_in.close()
+        header_str = b'<?xml version="1.0" encoding="windows-1251"?>\n'
+        have_header = data_in.find(header_str)
+        if have_header == 0:
+            file_out = open(file_source, 'bw')
+            file_out.write(header_str + data_in)
+            file_out.close()
     return True
 
-def get_files_path():
-    PATH_EVENTS_SOURCE = os.getenv('PATH_EVENTS_SOURCE')
-    PATH_CNDIDATES_SOURCE = os.getenv('PATH_CNDIDATES_SOURCE')
-    PATH_SAVE_EVENTS = os.getenv('PATH_SAVE_EVENTS')
-    PATH_SAVE_CANDIDATES = os.getenv('PATH_SAVE_CANDIDATES')
-    PATH_VACANCY_SOURCE = os.getenv('PATH_VACANCY_SOURCE')
-    PATH_VACANCY_SAVE = os.getenv('PATH_VACANCY_SAVE')
-    PATH_DIVISION_SOURCE = os.getenv('PATH_DIVISION_SOURCE')
-    PATH_DIVIVISION_SAVE = os.getenv('PATH_DIVIVISION_SAVE')
-    PATH_VACANCY_CAND_SAVE = os.getenv('PATH_VACANCY_CAND_SAVE')
 
 if __name__ == '__main__':
     sys_args_parse = argparse.ArgumentParser(
-        description=('This utility parsing xml-files from '+
+        description=('This utility parsing xml-files from ' +
                      'e-staff and convert to csv-files')
     )
     sys_args_parse.add_argument(
@@ -928,8 +973,14 @@ if __name__ == '__main__':
         action='store_true'
     )
     sys_args_parse.add_argument(
+        '-ssp', '--show_system_preference',
+        help='Utility show path define in system preference',
+        default=False,
+        action='store_true'
+    )
+    sys_args_parse.add_argument(
         '-all', '--all',
-        help ='Utility parsing all categorie source files',
+        help='Utility parsing all categorie source files',
         default=False,
         action='store_true'
     )
@@ -966,6 +1017,9 @@ if __name__ == '__main__':
     cmd_arg = sys_args_parse.parse_args(sys.argv[1:])
 
     if cmd_arg.using_system_preference:
+        set_files_path()
+
+    if cmd_arg.show_system_preference:
         get_files_path()
 
     if cmd_arg.all:
@@ -985,6 +1039,10 @@ if __name__ == '__main__':
         ##thread_4.start()
 
         ##correction_files()
+        while True:
+            if not (thread_1.isAlive() or thread_2.isAlive() or
+                    thread_3.isAlive()):
+                break
 
     if cmd_arg.candidates and not cmd_arg.all:
         candidate_scan()
